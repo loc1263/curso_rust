@@ -1,0 +1,6 @@
+[package]
+name = "m23_pin_futures"
+version = "0.1.0"
+edition = "2024"
+
+# Este módulo no usa ningún runtime externo: construimos el nuestro con la biblioteca estándar.

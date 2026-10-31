@@ -1,0 +1,18 @@
+[package]
+name = "kvdb"
+version = "0.1.0"
+edition = "2024"
+description = "Mini base de datos clave-valor async (estilo Redis) del curso de Rust"
+
+[dependencies]
+anyhow = "1"
+thiserror = "2"
+tokio = { version = "1", features = ["full"] }
+
+[[bin]]
+name = "kv-server"
+path = "src/main.rs"
+
+[[bin]]
+name = "kv-cli"
+path = "src/bin/kv-cli.rs"

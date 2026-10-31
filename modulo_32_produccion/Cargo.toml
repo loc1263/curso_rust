@@ -1,0 +1,30 @@
+[package]
+name = "m32_produccion"
+version = "0.3.1"
+edition = "2024"
+rust-version = "1.85"                      # MSRV: versión mínima de Rust soportada
+description = "Plantilla de crate listo para producción (curso de Rust)"
+license = "MIT OR Apache-2.0"
+repository = "https://example.com/tu-usuario/m32_produccion"
+readme = "README.md"
+keywords = ["curso", "plantilla", "produccion"]   # máximo 5
+categories = ["development-tools"]
+publish = false                            # quita esta línea cuando quieras publicar de verdad en crates.io
+build = "build.rs"
+
+[features]
+# Las features son ADITIVAS: activarlas solo debe AÑADIR funcionalidad, nunca quitar ni cambiar comportamiento
+default = ["estadisticas"]
+estadisticas = []
+colores = []                               # códigos ANSI en la salida
+completo = ["estadisticas", "colores"]     # feature "paraguas"
+
+[dependencies]
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+module_name_repetitions = "allow"

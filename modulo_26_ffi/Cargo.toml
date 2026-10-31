@@ -1,0 +1,9 @@
+[package]
+name = "m26_ffi"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+# cdylib -> biblioteca dinámica (.dll/.so/.dylib) que C, Python, Node... pueden cargar
+# rlib   -> para poder usarla también desde los ejemplos de Rust
+crate-type = ["cdylib", "rlib"]

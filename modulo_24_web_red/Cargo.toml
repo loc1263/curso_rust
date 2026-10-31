@@ -1,0 +1,15 @@
+[package]
+name = "m24_web_red"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+axum = "0.8"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+
+[dev-dependencies]
+# Cliente HTTP sin TLS (default-features = false evita compilar OpenSSL/aws-lc);
+# para HTTPS añade la feature "rustls" (o "native-tls").
+reqwest = { version = "0.13", default-features = false, features = ["json"] }

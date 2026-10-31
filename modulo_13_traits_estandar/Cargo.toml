@@ -1,0 +1,4 @@
+[package]
+name = "m13_traits_estandar"
+version = "0.1.0"
+edition = "2024"

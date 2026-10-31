@@ -1,0 +1,4 @@
+[package]
+name = "m06_structs_metodos"
+version = "0.1.0"
+edition = "2024"

@@ -1,0 +1,11 @@
+[package]
+name = "m31_no_std_embebido"
+version = "0.1.0"
+edition = "2024"
+
+# Biblioteca #![no_std]: no depende de std (sin SO, sin hilos, sin ficheros).
+# Funciona en microcontroladores, kernels, WebAssembly y, por supuesto, en tu PC.
+[features]
+default = []
+# Activa `alloc` (Vec, String, Box...) sin necesitar std: hace falta un #[global_allocator]
+alloc = []

@@ -1,0 +1,14 @@
+[package]
+name = "m29_rendimiento"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rayon = "1"
+
+[dev-dependencies]
+criterion = { version = "0.8", default-features = false, features = ["cargo_bench_support"] }
+
+[[bench]]
+name = "algoritmos"
+harness = false # criterion aporta su propio main

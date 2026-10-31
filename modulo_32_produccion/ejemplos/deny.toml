@@ -1,0 +1,26 @@
+# Configuración mínima de cargo-deny.   Instalar: cargo install cargo-deny --locked
+# Ejecutar:  cargo deny check            (o por partes: advisories | licenses | bans | sources)
+
+[advisories]
+# Falla si alguna dependencia tiene una vulnerabilidad o está abandonada (base de datos RustSec)
+yanked = "deny"
+ignore = [
+    # "RUSTSEC-2024-0000",   # ignora un aviso concreto SOLO con motivo justificado
+]
+
+[licenses]
+# Solo permitimos licencias permisivas conocidas
+allow = ["MIT", "Apache-2.0", "Apache-2.0 WITH LLVM-exception", "BSD-3-Clause", "ISC", "Unicode-3.0", "Zlib"]
+confidence-threshold = 0.9
+
+[bans]
+multiple-versions = "warn"      # avisa si tienes dos versiones del mismo crate en el árbol
+wildcards = "deny"              # prohíbe dependencias con versión "*"
+deny = [
+    # { crate = "openssl" },    # p. ej. forzar rustls y evitar OpenSSL
+]
+
+[sources]
+unknown-registry = "deny"       # solo crates.io
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
