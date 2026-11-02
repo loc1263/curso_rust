@@ -20,7 +20,9 @@ struct Config {
 impl Config {
     fn desde_entorno() -> Result<Self, String> {
         let puerto = match std::env::var("PUERTO") {
-            Ok(v) => v.parse().map_err(|e| format!("PUERTO='{v}' inválido: {e}"))?,
+            Ok(v) => v
+                .parse()
+                .map_err(|e| format!("PUERTO='{v}' inválido: {e}"))?,
             Err(_) => 8080,
         };
         let entorno = std::env::var("ENTORNO").unwrap_or_else(|_| "desarrollo".into());

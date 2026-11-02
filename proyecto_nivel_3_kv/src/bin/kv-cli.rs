@@ -12,16 +12,20 @@ use tokio::net::TcpStream;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let direccion = std::env::args().nth(1).unwrap_or_else(|| "127.0.0.1:6380".into());
-    let socket = TcpStream::connect(&direccion)
-        .await
-        .with_context(|| format!("no se pudo conectar a {direccion} (¿está corriendo kv-server?)"))?;
+    let direccion = std::env::args()
+        .nth(1)
+        .unwrap_or_else(|| "127.0.0.1:6380".into());
+    let socket = TcpStream::connect(&direccion).await.with_context(|| {
+        format!("no se pudo conectar a {direccion} (¿está corriendo kv-server?)")
+    })?;
     let (lectura, mut escritura) = socket.into_split();
     let mut servidor = BufReader::new(lectura).lines();
 
     let interactivo = std::io::IsTerminal::is_terminal(&std::io::stdin());
     if interactivo {
-        eprintln!("conectado a {direccion}. Escribe comandos (PING, SET, GET, DEL, INCR, TTL, KEYS, INFO, QUIT).");
+        eprintln!(
+            "conectado a {direccion}. Escribe comandos (PING, SET, GET, DEL, INCR, TTL, KEYS, INFO, QUIT)."
+        );
     }
 
     // stdin es bloqueante: se lee desde un hilo aparte y se pasa por un canal
@@ -51,7 +55,10 @@ async fn main() -> Result<()> {
             eprintln!("el servidor cerró la conexión");
             break;
         };
-        if let Some(n) = primera.strip_prefix('*').and_then(|n| n.parse::<usize>().ok()) {
+        if let Some(n) = primera
+            .strip_prefix('*')
+            .and_then(|n| n.parse::<usize>().ok())
+        {
             println!("({n} elementos)");
             for _ in 0..n {
                 let item = servidor.next_line().await?.unwrap_or_default();

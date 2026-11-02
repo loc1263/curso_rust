@@ -24,14 +24,20 @@ fn main() {
 
     // 1) Carga ligera por elemento: el coste de repartir el trabajo puede superar la ganancia
     let datos: Vec<u64> = (0..20_000_000).collect();
-    let a = cronometrar("suma cuadrados (secuencial)", || suma_cuadrados_iter(&datos));
+    let a = cronometrar("suma cuadrados (secuencial)", || {
+        suma_cuadrados_iter(&datos)
+    });
     let b = cronometrar("suma cuadrados (rayon)", || suma_cuadrados_par(&datos));
     assert_eq!(a, b);
 
     // 2) Carga pesada por elemento: aquí rayon brilla
     let limite = 2_000_000;
-    let seq = cronometrar("primos hasta 2M (secuencial)", || (0..limite).filter(|&n| es_primo(n)).count());
-    let par = cronometrar("primos hasta 2M (rayon)", || (0..limite).into_par_iter().filter(|&n| es_primo(n)).count());
+    let seq = cronometrar("primos hasta 2M (secuencial)", || {
+        (0..limite).filter(|&n| es_primo(n)).count()
+    });
+    let par = cronometrar("primos hasta 2M (rayon)", || {
+        (0..limite).into_par_iter().filter(|&n| es_primo(n)).count()
+    });
     assert_eq!(seq, par);
     println!("  -> {par} primos\n");
 
@@ -44,12 +50,20 @@ fn main() {
     assert_eq!(v1, v2);
 
     // 4) Operaciones típicas: map + reduce, chunks, join (divide y vencerás)
-    let total: u64 = (1..=1_000u64).into_par_iter().map(|x| x * x).reduce(|| 0, |a, b| a + b);
+    let total: u64 = (1..=1_000u64)
+        .into_par_iter()
+        .map(|x| x * x)
+        .reduce(|| 0, |a, b| a + b);
     println!("\nmap + reduce = {total}");
-    let (izq, der) = rayon::join(|| (1..=10_000u64).sum::<u64>(), || (10_001..=20_000u64).sum::<u64>());
+    let (izq, der) = rayon::join(
+        || (1..=10_000u64).sum::<u64>(),
+        || (10_001..=20_000u64).sum::<u64>(),
+    );
     println!("rayon::join   = {izq} + {der}");
 
     // 5) Rayon garantiza ausencia de data races en compilación: no puedes mutar un contador
     //    compartido desde varias hebras sin Mutex/atómicos. Prefiere reducciones a estado compartido.
-    println!("\nRegla: mide antes de paralelizar; reparte trabajo GRANDE por elemento o datos MUY grandes.");
+    println!(
+        "\nRegla: mide antes de paralelizar; reparte trabajo GRANDE por elemento o datos MUY grandes."
+    );
 }

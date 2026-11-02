@@ -88,7 +88,11 @@ fn parsear_o_fallar(s: &str) -> i32 {
 
 // ---------- Cow: clonar solo si hace falta ----------
 fn normalizar(s: &str) -> Cow<'_, str> {
-    if s.contains(' ') { Cow::Owned(s.replace(' ', "_")) } else { Cow::Borrowed(s) }
+    if s.contains(' ') {
+        Cow::Owned(s.replace(' ', "_"))
+    } else {
+        Cow::Borrowed(s)
+    }
 }
 
 // ---------- DST: tipos sin tamaño conocido (str, [T], dyn Trait) siempre detrás de un puntero ----------
@@ -112,13 +116,27 @@ fn main() {
     let mut m = MapaDeTipos::default();
     m.insertar(8080u16);
     m.insertar(String::from("localhost"));
-    println!("puerto = {:?}, host = {:?}, bool = {:?}", m.obtener::<u16>(), m.obtener::<String>(), m.obtener::<bool>());
+    println!(
+        "puerto = {:?}, host = {:?}, bool = {:?}",
+        m.obtener::<u16>(),
+        m.obtener::<String>(),
+        m.obtener::<bool>()
+    );
 
     println!("{}", parsear_o_fallar("12"));
 
     let a = normalizar("sin_espacios");
     let b = normalizar("con espacios aquí");
-    println!("{a} ({}) / {b} ({})", matches!(a, Cow::Borrowed(_)), matches!(b, Cow::Owned(_)));
+    println!(
+        "{a} ({}) / {b} ({})",
+        matches!(a, Cow::Borrowed(_)),
+        matches!(b, Cow::Owned(_))
+    );
 
-    println!("{} {} {}", longitud_de("abc"), longitud_de(&[1u8, 2][..]), longitud_de(&vec![0u8; 5]));
+    println!(
+        "{} {} {}",
+        longitud_de("abc"),
+        longitud_de(&[1u8, 2][..]),
+        longitud_de(&vec![0u8; 5])
+    );
 }

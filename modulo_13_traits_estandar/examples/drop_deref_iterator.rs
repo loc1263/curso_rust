@@ -84,10 +84,14 @@ fn main() {
     println!("len = {}, mayúsculas = {}", t.len(), t.to_uppercase());
     println!("deref coercion: {}", longitud_de(&t)); // &Texto -> &String -> &str
 
-    let tabla = Tabla { datos: vec![10, 20, 30] };
+    let tabla = Tabla {
+        datos: vec![10, 20, 30],
+    };
     println!("tabla[1] = {}", tabla[1]);
 
-    let eq = Equipo { miembros: vec!["Ana".into(), "Luis".into()] };
+    let eq = Equipo {
+        miembros: vec!["Ana".into(), "Luis".into()],
+    };
     for m in &eq {
         println!("miembro: {m}");
     }

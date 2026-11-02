@@ -1,5 +1,23 @@
 # Módulo 22 — Async/await
 
+## La idea en 2 minutos
+
+Imagina un camarero. Un camarero **síncrono** toma tu pedido y se queda parado hasta que la cocina termine. Uno **asíncrono** toma tu pedido, lo pasa a cocina y mientras tanto atiende otras mesas. `async/await` permite que un solo hilo atienda miles de conexiones porque, mientras una espera (red, disco, temporizador), puede hacer otra cosa.
+
+```rust
+#[tokio::main]
+async fn main() {
+    let (a, b) = tokio::join!(descargar("a"), descargar("b")); // las dos esperas ocurren a la vez
+}
+```
+
+Tres ideas que lo explican todo:
+1. `async fn` devuelve un **Future**: una receta, no un plato. No hace nada hasta que lo `.await`es.
+2. Hace falta un **runtime** (tokio) que vaya ejecutando esas recetas.
+3. **Nunca bloquees** dentro de código async (`std::thread::sleep`): dejas sin atender a todos los demás.
+
+**Orden recomendado:** `basico` → `select_timeout` → `canales_async`.
+
 ## Objetivos
 
 - Entender qué es un `Future` y cómo `async`/`await` los compone.

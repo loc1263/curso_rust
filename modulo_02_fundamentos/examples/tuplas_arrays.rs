@@ -16,7 +16,12 @@ fn main() {
     let b: [i32; 3] = [10, 20, 30];
     let ceros = [0; 5]; // [0, 0, 0, 0, 0]
     println!("{a:?} {b:?} {ceros:?}");
-    println!("len = {}, primero = {}, último = {}", a.len(), a[0], a[a.len() - 1]);
+    println!(
+        "len = {}, primero = {}, último = {}",
+        a.len(),
+        a[0],
+        a[a.len() - 1]
+    );
 
     // Acceso seguro: get devuelve Option
     println!("{:?} {:?}", a.get(2), a.get(10));
@@ -33,5 +38,7 @@ fn main() {
     println!("matriz[1][2] = {}", matriz[1][2]);
 
     // Comparación
-    println!("{}", [1, 2, 3] == [1, 2, 3]);
+    #[allow(clippy::eq_op)]
+    let iguales = [1, 2, 3] == [1, 2, 3];
+    println!("{iguales}");
 }

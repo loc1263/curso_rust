@@ -59,7 +59,9 @@ pub enum ErrorApi {
 impl IntoResponse for ErrorApi {
     fn into_response(self) -> Response {
         let (codigo, mensaje) = match self {
-            ErrorApi::NoEncontrada(id) => (StatusCode::NOT_FOUND, format!("la tarea {id} no existe")),
+            ErrorApi::NoEncontrada(id) => {
+                (StatusCode::NOT_FOUND, format!("la tarea {id} no existe"))
+            }
             ErrorApi::Invalida(m) => (StatusCode::UNPROCESSABLE_ENTITY, m.to_string()),
         };
         (codigo, Json(serde_json::json!({ "error": mensaje }))).into_response()
@@ -95,27 +97,49 @@ async fn crear(
     }
     let mut datos = estado.datos.lock().unwrap();
     datos.siguiente_id += 1;
-    let tarea = Tarea { id: datos.siguiente_id, titulo: entrada.titulo, hecha: false };
+    let tarea = Tarea {
+        id: datos.siguiente_id,
+        titulo: entrada.titulo,
+        hecha: false,
+    };
     datos.tareas.insert(tarea.id, tarea.clone());
     Ok((StatusCode::CREATED, Json(tarea)))
 }
 
 // Path<T> extrae segmentos de la URL: /tareas/{id}
-async fn obtener(State(estado): State<Estado>, Path(id): Path<u64>) -> Result<Json<Tarea>, ErrorApi> {
+async fn obtener(
+    State(estado): State<Estado>,
+    Path(id): Path<u64>,
+) -> Result<Json<Tarea>, ErrorApi> {
     let datos = estado.datos.lock().unwrap();
-    datos.tareas.get(&id).cloned().map(Json).ok_or(ErrorApi::NoEncontrada(id))
+    datos
+        .tareas
+        .get(&id)
+        .cloned()
+        .map(Json)
+        .ok_or(ErrorApi::NoEncontrada(id))
 }
 
-async fn completar(State(estado): State<Estado>, Path(id): Path<u64>) -> Result<Json<Tarea>, ErrorApi> {
+async fn completar(
+    State(estado): State<Estado>,
+    Path(id): Path<u64>,
+) -> Result<Json<Tarea>, ErrorApi> {
     let mut datos = estado.datos.lock().unwrap();
-    let tarea = datos.tareas.get_mut(&id).ok_or(ErrorApi::NoEncontrada(id))?;
+    let tarea = datos
+        .tareas
+        .get_mut(&id)
+        .ok_or(ErrorApi::NoEncontrada(id))?;
     tarea.hecha = true;
     Ok(Json(tarea.clone()))
 }
 
 async fn borrar(State(estado): State<Estado>, Path(id): Path<u64>) -> Result<StatusCode, ErrorApi> {
     let mut datos = estado.datos.lock().unwrap();
-    datos.tareas.remove(&id).map(|_| StatusCode::NO_CONTENT).ok_or(ErrorApi::NoEncontrada(id))
+    datos
+        .tareas
+        .remove(&id)
+        .map(|_| StatusCode::NO_CONTENT)
+        .ok_or(ErrorApi::NoEncontrada(id))
 }
 
 // ---------------------------- middleware ----------------------------
@@ -125,7 +149,11 @@ async fn registrar(req: Request, next: Next) -> Response {
     let (metodo, ruta) = (req.method().clone(), req.uri().path().to_string());
     let inicio = Instant::now();
     let respuesta = next.run(req).await;
-    println!("  [log] {metodo} {ruta} -> {} ({:?})", respuesta.status().as_u16(), inicio.elapsed());
+    println!(
+        "  [log] {metodo} {ruta} -> {} ({:?})",
+        respuesta.status().as_u16(),
+        inicio.elapsed()
+    );
     respuesta
 }
 
@@ -137,7 +165,11 @@ async fn autenticar(req: Request, next: Next) -> Result<Response, StatusCode> {
         .and_then(|v| v.to_str().ok())
         .and_then(|v| v.strip_prefix("Bearer "))
         .is_some_and(|t| t == TOKEN);
-    if valido { Ok(next.run(req).await) } else { Err(StatusCode::UNAUTHORIZED) }
+    if valido {
+        Ok(next.run(req).await)
+    } else {
+        Err(StatusCode::UNAUTHORIZED)
+    }
 }
 
 /// Construye el router completo. Separarlo de `main` permite probarlo sin abrir la red.

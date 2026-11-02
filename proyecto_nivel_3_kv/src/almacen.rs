@@ -76,7 +76,9 @@ impl Drop for GuardiaConexion {
 }
 
 fn ahora_unix_ms() -> u64 {
-    SystemTime::now().duration_since(UNIX_EPOCH).map_or(0, |d| d.as_millis() as u64)
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map_or(0, |d| d.as_millis() as u64)
 }
 
 impl Almacen {
@@ -106,7 +108,11 @@ impl Almacen {
             Err(e) if e.kind() == io::ErrorKind::NotFound => HashMap::new(),
             Err(e) => return Err(e),
         };
-        let archivo = OpenOptions::new().create(true).append(true).open(ruta).await?;
+        let archivo = OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(ruta)
+            .await?;
         let (tx, rx) = mpsc::unbounded_channel();
         let tarea = tokio::spawn(escritor_aof(archivo, rx));
         Ok((Self::nuevo(datos, Some(tx)), Some(tarea)))
@@ -114,7 +120,10 @@ impl Almacen {
 
     fn datos(&self) -> MutexGuard<'_, Mapa> {
         // Si un hilo hizo panic con el lock tomado, los datos siguen siendo utilizables
-        self.interior.datos.lock().unwrap_or_else(|e| e.into_inner())
+        self.interior
+            .datos
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
     }
 
     fn registrar(&self, linea: String) {
@@ -135,8 +144,18 @@ impl Almacen {
         let ahora = Instant::now();
         let caduca_ms = ttl.map_or(0, |d| ahora_unix_ms() + d.as_millis() as u64);
         let mut datos = self.datos();
-        self.registrar(format!("S {} {} {caduca_ms}\n", citar(&clave), citar(&valor)));
-        datos.insert(clave, Entrada { valor, expira: ttl.map(|d| ahora + d) });
+        self.registrar(format!(
+            "S {} {} {caduca_ms}\n",
+            citar(&clave),
+            citar(&valor)
+        ));
+        datos.insert(
+            clave,
+            Entrada {
+                valor,
+                expira: ttl.map(|d| ahora + d),
+            },
+        );
     }
 
     pub fn get(&self, clave: &str) -> Option<String> {
@@ -166,7 +185,13 @@ impl Almacen {
                 n
             }
             None => {
-                datos.insert(clave.to_string(), Entrada { valor: "1".into(), expira: None });
+                datos.insert(
+                    clave.to_string(),
+                    Entrada {
+                        valor: "1".into(),
+                        expira: None,
+                    },
+                );
                 1
             }
         };
@@ -182,14 +207,24 @@ impl Almacen {
         match datos.get(clave) {
             None => -2,
             Some(Entrada { expira: None, .. }) => -1,
-            Some(Entrada { expira: Some(e), .. }) => e.saturating_duration_since(ahora).as_millis().div_ceil(1000) as i64,
+            Some(Entrada {
+                expira: Some(e), ..
+            }) => e
+                .saturating_duration_since(ahora)
+                .as_millis()
+                .div_ceil(1000) as i64,
         }
     }
 
     /// Claves vivas, ordenadas.
     pub fn keys(&self) -> Vec<String> {
         let ahora = Instant::now();
-        let mut claves: Vec<String> = self.datos().iter().filter(|(_, e)| !e.caducada(ahora)).map(|(k, _)| k.clone()).collect();
+        let mut claves: Vec<String> = self
+            .datos()
+            .iter()
+            .filter(|(_, e)| !e.caducada(ahora))
+            .map(|(k, _)| k.clone())
+            .collect();
         claves.sort();
         claves
     }
@@ -198,7 +233,11 @@ impl Almacen {
     pub fn purgar(&self) -> usize {
         let mut datos = self.datos();
         let ahora = Instant::now();
-        let caducadas: Vec<String> = datos.iter().filter(|(_, e)| e.caducada(ahora)).map(|(k, _)| k.clone()).collect();
+        let caducadas: Vec<String> = datos
+            .iter()
+            .filter(|(_, e)| e.caducada(ahora))
+            .map(|(k, _)| k.clone())
+            .collect();
         for k in &caducadas {
             datos.remove(k);
             self.registrar(format!("D {}\n", citar(k)));
@@ -221,9 +260,22 @@ impl Almacen {
         vec![
             format!("version:{}", env!("CARGO_PKG_VERSION")),
             format!("claves:{}", self.keys().len()),
-            format!("conexiones:{}", self.interior.conexiones.load(Ordering::Relaxed)),
-            format!("comandos:{}", self.interior.comandos.load(Ordering::Relaxed)),
-            format!("persistencia:{}", if self.interior.aof.is_some() { "aof" } else { "ninguna" }),
+            format!(
+                "conexiones:{}",
+                self.interior.conexiones.load(Ordering::Relaxed)
+            ),
+            format!(
+                "comandos:{}",
+                self.interior.comandos.load(Ordering::Relaxed)
+            ),
+            format!(
+                "persistencia:{}",
+                if self.interior.aof.is_some() {
+                    "aof"
+                } else {
+                    "ninguna"
+                }
+            ),
         ]
     }
 }
@@ -249,14 +301,26 @@ fn reproducir(texto: &str) -> Mapa {
                     eprintln!("aof: línea {} con caducidad inválida; se ignora", n + 1);
                     continue;
                 };
-                let expira = (caduca_ms != 0).then(|| ahora + Duration::from_millis(caduca_ms.saturating_sub(ahora_ms)));
-                datos.insert((*clave).to_string(), Entrada { valor: (*valor).to_string(), expira });
+                let expira = (caduca_ms != 0)
+                    .then(|| ahora + Duration::from_millis(caduca_ms.saturating_sub(ahora_ms)));
+                datos.insert(
+                    (*clave).to_string(),
+                    Entrada {
+                        valor: (*valor).to_string(),
+                        expira,
+                    },
+                );
             }
             ["D", clave] => {
                 datos.remove(*clave);
             }
             ["I", clave] => {
-                let e = datos.entry((*clave).to_string()).or_insert_with(|| Entrada { valor: "0".into(), expira: None });
+                let e = datos
+                    .entry((*clave).to_string())
+                    .or_insert_with(|| Entrada {
+                        valor: "0".into(),
+                        expira: None,
+                    });
                 let n: i64 = e.valor.parse().unwrap_or(0);
                 e.valor = n.saturating_add(1).to_string();
             }

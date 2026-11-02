@@ -55,7 +55,10 @@ fn cronometrar(nombre: &str, mut f: impl FnMut() -> f32) {
     for _ in 0..50 {
         r += black_box(f());
     }
-    println!("{nombre:<26} {:>9.2?}  (suma acumulada = {r:e})", t.elapsed());
+    println!(
+        "{nombre:<26} {:>9.2?}  (suma acumulada = {r:e})",
+        t.elapsed()
+    );
 }
 
 fn main() {
@@ -73,8 +76,12 @@ fn main() {
     println!("intrínsecos x86_64 no disponibles en esta arquitectura");
 
     println!("\nNotas:");
-    println!(" - `std::simd` (portable SIMD) sigue siendo inestable (nightly); crates estables: `wide`, `pulp`, `memchr`.");
-    println!(" - Para activar instrucciones de tu CPU en TODO el binario: RUSTFLAGS=\"-C target-cpu=native\".");
+    println!(
+        " - `std::simd` (portable SIMD) sigue siendo inestable (nightly); crates estables: `wide`, `pulp`, `memchr`."
+    );
+    println!(
+        " - Para activar instrucciones de tu CPU en TODO el binario: RUSTFLAGS=\"-C target-cpu=native\"."
+    );
     println!(" - Comprueba qué se vectoriza con `cargo asm` o Compiler Explorer (godbolt.org).");
     if cfg!(debug_assertions) {
         println!(" - AVISO: en debug no hay vectorización; usa --release.");

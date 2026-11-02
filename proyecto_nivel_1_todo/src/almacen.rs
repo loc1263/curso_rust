@@ -24,7 +24,10 @@ mod tests {
     #[test]
     fn guarda_y_carga() {
         let ruta = std::env::temp_dir().join("todo_test_guarda_y_carga.txt");
-        let tareas = vec![Tarea::new(1, "a".to_string()), Tarea::new(2, "b".to_string())];
+        let tareas = vec![
+            Tarea::new(1, "a".to_string()),
+            Tarea::new(2, "b".to_string()),
+        ];
         guardar(&ruta, &tareas).unwrap();
         assert_eq!(cargar(&ruta).unwrap(), tareas);
         fs::remove_file(&ruta).unwrap();

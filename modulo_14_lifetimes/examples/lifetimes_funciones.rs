@@ -50,7 +50,9 @@ fn main() {
     println!("{}", primera("uno", "dos"));
     println!("{}", primera_palabra("hola mundo cruel"));
 
-    let t = Texto { contenido: "Lifetimes en Rust".into() };
+    let t = Texto {
+        contenido: "Lifetimes en Rust".into(),
+    };
     println!("{}", t.inicio(9));
 
     println!("{}", mensaje());

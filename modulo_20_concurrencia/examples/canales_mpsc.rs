@@ -66,7 +66,10 @@ fn main() {
     // try_recv / recv_timeout: no bloquean indefinidamente
     let (_tx, rx) = mpsc::channel::<i32>();
     println!("try_recv: {:?}", rx.try_recv());
-    println!("recv_timeout: {:?}", rx.recv_timeout(Duration::from_millis(20)));
+    println!(
+        "recv_timeout: {:?}",
+        rx.recv_timeout(Duration::from_millis(20))
+    );
 
     // sync_channel: canal con capacidad limitada (aplica contrapresión)
     let (tx, rx) = mpsc::sync_channel(2);

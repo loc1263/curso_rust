@@ -22,12 +22,17 @@ fn main() {
     let mut p = Punto { x: 1.5, y: 2.0 };
     let rc = unsafe { m26_escalar(&mut p, 2.0) };
     println!("escalar -> rc = {rc}, p = {p:?}");
-    println!("escalar(NULL) -> rc = {}", unsafe { m26_escalar(std::ptr::null_mut(), 2.0) });
+    println!("escalar(NULL) -> rc = {}", unsafe {
+        m26_escalar(std::ptr::null_mut(), 2.0)
+    });
 
     // Cadenas: Rust reserva, nosotros (como "C") debemos liberar con la función de Rust
     let nombre = CString::new("Ana").unwrap();
     let saludo = unsafe { m26_saludar(nombre.as_ptr()) };
-    println!("saludo                   = {}", unsafe { CStr::from_ptr(saludo) }.to_str().unwrap());
+    println!(
+        "saludo                   = {}",
+        unsafe { CStr::from_ptr(saludo) }.to_str().unwrap()
+    );
     unsafe { m26_liberar_cadena(saludo) }; // ¡NO usar free() de C: distinto asignador!
 
     // Handle opaco

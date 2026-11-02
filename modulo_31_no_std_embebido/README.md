@@ -1,5 +1,19 @@
 # Módulo 31 — `no_std`, embebido y WebAssembly
 
+## La idea en 2 minutos
+
+La biblioteca estándar de Rust son en realidad **tres capas**, como matrioskas:
+
+```
+core   → lo básico: tipos, Option, Result, iteradores...   (no necesita nada)
+alloc  → + Vec, String, Box...                              (necesita un asignador de memoria)
+std    → + archivos, red, hilos, println!...                (necesita un sistema operativo)
+```
+
+Un microcontrolador no tiene sistema operativo (a veces ni memoria dinámica), así que se programa con `#![no_std]` y solo `core`. La ventaja: el **mismo código** (un parser, un CRC, una cola) funciona en una placa, en WebAssembly y en tu PC, y puedes probarlo con `cargo test` sin hardware.
+
+**Orden recomendado:** lee `src/lib.rs`, ejecuta `--example sensores` (con y sin `--features alloc`) y termina con las secciones de embassy y WebAssembly del README (son guías, no se compilan aquí).
+
 ## Objetivos
 
 - Entender la jerarquía `core` → `alloc` → `std`.

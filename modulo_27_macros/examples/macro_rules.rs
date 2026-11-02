@@ -28,17 +28,25 @@ macro_rules! funcion_constante {
         }
     };
 }
-funcion_constante!(pi_aprox -> f64 = 3.14159);
+funcion_constante!(limite -> u32 = 100);
 funcion_constante!(saludo -> &'static str = "hola");
 
 fn main() {
     let m: HashMap<&str, i32> = mapa! { "uno" => 1, "dos" => 2, "tres" => 3 };
     let vacio: HashMap<i32, i32> = mapa!();
-    println!("mapa tiene {} entradas, vacío tiene {}", m.len(), vacio.len());
+    println!(
+        "mapa tiene {} entradas, vacío tiene {}",
+        m.len(),
+        vacio.len()
+    );
 
     mostrar!(maximo!(3), maximo!(3, 9, 5), maximo!(1.5, 0.5));
     mostrar!(contar!(a b c d e), contar!());
-    mostrar!(calcular!(2 mas 3), calcular!(2 por 3 mas 4), calcular!(1 mas 2 mas 3 por 4));
+    mostrar!(
+        calcular!(2 mas 3),
+        calcular!(2 por 3 mas 4),
+        calcular!(1 mas 2 mas 3 por 4)
+    );
 
     println!("\nenum generado: {:?}", Color::TODAS);
     for c in Color::TODAS {
@@ -49,7 +57,7 @@ fn main() {
     let p = Persona::nuevo("Ana".into(), 30);
     println!("{p:?}");
 
-    println!("{} {}", pi_aprox(), saludo());
+    println!("{} {}", limite(), saludo());
 
     // Macros de la std que ya usas: vec!, println!, format!, assert!, matches!, dbg!, todo!...
     println!("{}", matches!(Color::Rojo, Color::Rojo | Color::Verde));

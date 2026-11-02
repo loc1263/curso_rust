@@ -1,5 +1,21 @@
 # Módulo 23 — Pin y Futures a fondo
 
+## La idea en 2 minutos
+
+En el módulo 22 usaste async como una caja negra. Aquí la abrimos. Un `Future` es solo un objeto con un método:
+
+```rust
+fn poll(self: Pin<&mut Self>, cx: &mut Context) -> Poll<Output>
+//  devuelve Poll::Ready(valor)  -> "ya terminé"
+//  o        Poll::Pending       -> "aún no; avísame cuando pueda seguir"
+```
+
+El **ejecutor** llama a `poll` una y otra vez; el **Waker** es el timbre con el que un Future dice "ya puedes volver a preguntarme". Un `async fn` es solo una máquina de estados escrita por el compilador con este patrón.
+
+¿Y `Pin`? Una máquina de estados puede guardar referencias a sus propias variables; si se moviera en memoria, esas referencias quedarían apuntando a ningún sitio. `Pin` es la promesa de **"este valor ya no se moverá"**.
+
+**Orden recomendado:** `future_manual` → `ejecutor_mini` → `pin_unpin` (el más abstracto, déjalo para el final).
+
 ## Objetivos
 
 - Saber qué hay "bajo el capó" de `async`/`await`.

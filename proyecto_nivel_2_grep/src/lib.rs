@@ -46,7 +46,11 @@ impl Buscador {
         if patron.is_empty() {
             return Err(ErrorBusqueda::PatronVacio);
         }
-        let patron = if opciones.ignorar_mayusculas { patron.to_lowercase() } else { patron.to_string() };
+        let patron = if opciones.ignorar_mayusculas {
+            patron.to_lowercase()
+        } else {
+            patron.to_string()
+        };
         Ok(Buscador { patron, opciones })
     }
 
@@ -67,8 +71,14 @@ impl Buscador {
         // Palabra completa: el patrón debe estar rodeado de caracteres que no sean alfanuméricos
         let es_palabra = |c: char| c.is_alphanumeric() || c == '_';
         texto.match_indices(&self.patron).any(|(i, m)| {
-            let antes = texto[..i].chars().next_back().is_none_or(|c| !es_palabra(c));
-            let despues = texto[i + m.len()..].chars().next().is_none_or(|c| !es_palabra(c));
+            let antes = texto[..i]
+                .chars()
+                .next_back()
+                .is_none_or(|c| !es_palabra(c));
+            let despues = texto[i + m.len()..]
+                .chars()
+                .next()
+                .is_none_or(|c| !es_palabra(c));
             antes && despues
         })
     }
@@ -79,14 +89,19 @@ impl Buscador {
             .lines()
             .enumerate()
             .filter(|(_, l)| self.coincide(l))
-            .map(|(i, l)| Coincidencia { numero_linea: i + 1, linea: l.to_string() })
+            .map(|(i, l)| Coincidencia {
+                numero_linea: i + 1,
+                linea: l.to_string(),
+            })
             .collect()
     }
 
     /// Busca en un archivo. Los archivos que no son texto UTF-8 se informan como error de lectura.
     pub fn buscar_en_archivo(&self, ruta: &Path) -> Result<Vec<Coincidencia>, ErrorBusqueda> {
-        let texto = fs::read_to_string(ruta)
-            .map_err(|fuente| ErrorBusqueda::Lectura { ruta: ruta.to_path_buf(), fuente })?;
+        let texto = fs::read_to_string(ruta).map_err(|fuente| ErrorBusqueda::Lectura {
+            ruta: ruta.to_path_buf(),
+            fuente,
+        })?;
         Ok(self.buscar_en_texto(&texto))
     }
 }
@@ -133,7 +148,10 @@ mod tests {
 
     #[test]
     fn ignorar_mayusculas() {
-        let op = Opciones { ignorar_mayusculas: true, ..Default::default() };
+        let op = Opciones {
+            ignorar_mayusculas: true,
+            ..Default::default()
+        };
         let r = buscador("RUST", op).buscar_en_texto(TEXTO);
         assert_eq!(r.len(), 3);
         assert_eq!(r[0].linea, "Rust es rápido");
@@ -141,14 +159,21 @@ mod tests {
 
     #[test]
     fn invertir_devuelve_las_que_no_coinciden() {
-        let op = Opciones { invertir: true, ..Default::default() };
+        let op = Opciones {
+            invertir: true,
+            ..Default::default()
+        };
         let r = buscador("es", op).buscar_en_texto(TEXTO);
         assert_eq!(r.len(), 2);
     }
 
     #[test]
     fn palabra_completa_descarta_rusty() {
-        let op = Opciones { palabra_completa: true, ignorar_mayusculas: true, ..Default::default() };
+        let op = Opciones {
+            palabra_completa: true,
+            ignorar_mayusculas: true,
+            ..Default::default()
+        };
         let r = buscador("rust", op).buscar_en_texto(TEXTO);
         let lineas: Vec<usize> = r.iter().map(|c| c.numero_linea).collect();
         assert_eq!(lineas, vec![1, 4]);
@@ -156,7 +181,10 @@ mod tests {
 
     #[test]
     fn patron_vacio_es_error() {
-        assert!(matches!(Buscador::nuevo("", Opciones::default()), Err(ErrorBusqueda::PatronVacio)));
+        assert!(matches!(
+            Buscador::nuevo("", Opciones::default()),
+            Err(ErrorBusqueda::PatronVacio)
+        ));
     }
 
     #[test]
@@ -169,7 +197,10 @@ mod tests {
 
     #[test]
     fn unicode_con_ignorar_mayusculas() {
-        let op = Opciones { ignorar_mayusculas: true, ..Default::default() };
+        let op = Opciones {
+            ignorar_mayusculas: true,
+            ..Default::default()
+        };
         let r = buscador("ÁRBOL", op).buscar_en_texto("el árbol\notro");
         assert_eq!(r.len(), 1);
     }

@@ -17,8 +17,14 @@ fn main() {
     println!("mesa {} -> {:.2} €", cuenta.mesa, cuenta.total());
     // cuenta.total = 0.0; // error: el campo es privado
 
-    let c = Circulo { centro: (0.0, 0.0), radio: 2.0 };
+    let c = Circulo {
+        centro: (0.0, 0.0),
+        radio: 2.0,
+    };
     println!("área = {:.3}", c.area());
     println!("contiene (1,1): {}", c.contiene((1.0, 1.0)));
-    println!("distancia = {}", geometria::distancia((0.0, 0.0), (3.0, 4.0)));
+    println!(
+        "distancia = {}",
+        geometria::distancia((0.0, 0.0), (3.0, 4.0))
+    );
 }

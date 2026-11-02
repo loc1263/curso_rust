@@ -30,7 +30,9 @@ impl<'a> Parser<'a> {
             return None;
         }
         let inicio = self.pos + (resto.len() - resto_trim.len());
-        let fin = resto_trim.find(char::is_whitespace).map_or(self.entrada.len(), |i| inicio + i);
+        let fin = resto_trim
+            .find(char::is_whitespace)
+            .map_or(self.entrada.len(), |i| inicio + i);
         self.pos = fin;
         Some(&self.entrada[inicio..fin])
     }
@@ -66,7 +68,9 @@ impl<'a, 'b> Par<'a, 'b> {
 fn main() {
     let texto = String::from("Llamadme Ismael. Hace algunos años...");
     let primera_frase = texto.split('.').next().expect("hay al menos un trozo");
-    let e = Extracto { parte: primera_frase };
+    let e = Extracto {
+        parte: primera_frase,
+    };
     println!("{e:?}");
 
     let palabras: Vec<&str>;
@@ -84,7 +88,10 @@ fn main() {
     let a_vivir;
     {
         let corto = String::from("x");
-        let par = Par { a: &largo, b: &corto };
+        let par = Par {
+            a: &largo,
+            b: &corto,
+        };
         a_vivir = par.solo_a(); // solo depende de 'a, así que sobrevive a `corto`
     }
     println!("{a_vivir}");

@@ -37,7 +37,11 @@ fn main() {
     // Option en la biblioteca estándar
     let nombres = vec!["ana", "luis", "eva"];
     println!("{:?} {:?}", nombres.first(), nombres.get(10));
-    println!("{:?} {:?}", buscar(&nombres, "luis"), buscar(&nombres, "zoe"));
+    println!(
+        "{:?} {:?}",
+        buscar(&nombres, "luis"),
+        buscar(&nombres, "zoe")
+    );
     println!("{:?}", "42".parse::<i32>().ok());
 
     // unwrap() hace panic con None: úsalo solo si estás seguro o en pruebas

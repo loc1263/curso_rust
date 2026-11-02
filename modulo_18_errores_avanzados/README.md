@@ -1,5 +1,26 @@
 # Módulo 18 — Errores avanzados
 
+## La idea en 2 minutos
+
+En el Nivel 1 viste `Result` y `?`. Aquí resolvemos una duda práctica: *¿qué tipo de error devuelvo?* La respuesta depende de **quién va a leer el error**:
+
+- **Una biblioteca** → quien la usa quiere distinguir casos (`match`): usa un `enum` con **`thiserror`**.
+- **Una aplicación** → solo quieres informar al usuario con contexto: usa **`anyhow`**.
+
+```rust
+// biblioteca
+#[derive(Debug, thiserror::Error)]
+enum ErrorConfig {
+    #[error("falta la clave '{0}'")] Falta(String),
+}
+
+// aplicación
+let texto = std::fs::read_to_string(ruta).with_context(|| format!("no se pudo abrir {ruta}"))?;
+```
+
+**Orden recomendado:** `box_dyn_error` (lo que hay "por debajo") → `thiserror_lib` → `anyhow_app`.
+(`anyhow_app` termina con un error a propósito para mostrar cómo `main` puede devolver `Result`.)
+
 ## Objetivos
 
 - Diseñar tipos de error propios y componibles.

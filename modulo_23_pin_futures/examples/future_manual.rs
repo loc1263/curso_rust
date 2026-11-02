@@ -65,7 +65,10 @@ struct EstadoTemp {
 
 impl Temporizador {
     fn nuevo(dur: Duration) -> Self {
-        let estado = Arc::new(std::sync::Mutex::new(EstadoTemp { terminado: false, waker: None }));
+        let estado = Arc::new(std::sync::Mutex::new(EstadoTemp {
+            terminado: false,
+            waker: None,
+        }));
         let copia = Arc::clone(&estado);
         thread::spawn(move || {
             thread::sleep(dur);

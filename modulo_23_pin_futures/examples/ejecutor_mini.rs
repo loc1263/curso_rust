@@ -21,7 +21,9 @@ struct Tarea {
 impl Wake for Tarea {
     fn wake(self: Arc<Self>) {
         let copia = Arc::clone(&self);
-        self.cola.send(copia).expect("la cola del ejecutor está llena o cerrada");
+        self.cola
+            .send(copia)
+            .expect("la cola del ejecutor está llena o cerrada");
     }
 }
 

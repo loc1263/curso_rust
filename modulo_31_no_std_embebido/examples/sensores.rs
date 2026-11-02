@@ -20,7 +20,10 @@ fn main() {
     // Trama de un sensor: "temp:23.5*<crc>"
     let carga = b"temp:23.5";
     let trama_crc = crc8(carga);
-    println!("CRC-8 de {:?} = {trama_crc:#04x}", core::str::from_utf8(carga).unwrap());
+    println!(
+        "CRC-8 de {:?} = {trama_crc:#04x}",
+        core::str::from_utf8(carga).unwrap()
+    );
 
     // Cola de lecturas con capacidad fija (si se llena, descartamos la más antigua: política típica)
     let mut cola: Anillo<i32, 4> = Anillo::new();
@@ -49,7 +52,10 @@ fn main() {
     #[cfg(feature = "alloc")]
     {
         use m31_no_std_embebido::con_alloc::{parsear_pares, resumen};
-        println!("\ncon `alloc`: {}", resumen(&parsear_pares("modo=eco; intervalo=500; led=on")));
+        println!(
+            "\ncon `alloc`: {}",
+            resumen(&parsear_pares("modo=eco; intervalo=500; led=on"))
+        );
     }
     #[cfg(not(feature = "alloc"))]
     println!("\n(prueba con --features alloc para ver las colecciones dinámicas)");

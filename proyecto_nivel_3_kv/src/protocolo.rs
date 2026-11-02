@@ -22,7 +22,11 @@ use thiserror::Error;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Comando {
     Ping,
-    Set { clave: String, valor: String, ttl: Option<Duration> },
+    Set {
+        clave: String,
+        valor: String,
+        ttl: Option<Duration>,
+    },
     Get(String),
     Del(String),
     Incr(String),
@@ -97,7 +101,11 @@ pub fn dividir(linea: &str) -> Result<Vec<String>, ErrorProtocolo> {
 
 /// Inversa de `dividir` para un token: añade comillas solo si hacen falta.
 pub fn citar(s: &str) -> String {
-    if !s.is_empty() && !s.chars().any(|c| c.is_whitespace() || c == '"' || c == '\\') {
+    if !s.is_empty()
+        && !s
+            .chars()
+            .any(|c| c.is_whitespace() || c == '"' || c == '\\')
+    {
         return s.to_string();
     }
     let mut r = String::with_capacity(s.len() + 2);
@@ -150,9 +158,13 @@ fn parsear_set(args: &[String]) -> Result<Comando, ErrorProtocolo> {
     let ttl = match opciones {
         [] => None,
         [opcion, cantidad] => {
-            let n: u64 = cantidad.parse().map_err(|_| ErrorProtocolo::Opcion(format!("'{cantidad}' no es un número")))?;
+            let n: u64 = cantidad
+                .parse()
+                .map_err(|_| ErrorProtocolo::Opcion(format!("'{cantidad}' no es un número")))?;
             if n == 0 {
-                return Err(ErrorProtocolo::Opcion("la caducidad debe ser mayor que 0".into()));
+                return Err(ErrorProtocolo::Opcion(
+                    "la caducidad debe ser mayor que 0".into(),
+                ));
             }
             match opcion.to_ascii_uppercase().as_str() {
                 "EX" => Some(Duration::from_secs(n)),
@@ -162,7 +174,11 @@ fn parsear_set(args: &[String]) -> Result<Comando, ErrorProtocolo> {
         }
         _ => return Err(ErrorProtocolo::Argumentos("SET")),
     };
-    Ok(Comando::Set { clave: clave.clone(), valor: valor.clone(), ttl })
+    Ok(Comando::Set {
+        clave: clave.clone(),
+        valor: valor.clone(),
+        ttl,
+    })
 }
 
 /// Respuesta del servidor.
@@ -208,17 +224,33 @@ mod tests {
 
     #[test]
     fn divide_con_comillas_y_escapes() {
-        assert_eq!(dividir(r#"SET k "hola mundo""#).unwrap(), ["SET", "k", "hola mundo"]);
-        assert_eq!(dividir(r#"SET k "a \"b\" \\ c""#).unwrap(), ["SET", "k", r#"a "b" \ c"#]);
+        assert_eq!(
+            dividir(r#"SET k "hola mundo""#).unwrap(),
+            ["SET", "k", "hola mundo"]
+        );
+        assert_eq!(
+            dividir(r#"SET k "a \"b\" \\ c""#).unwrap(),
+            ["SET", "k", r#"a "b" \ c"#]
+        );
         assert_eq!(dividir(r#"SET k """#).unwrap(), ["SET", "k", ""]);
         assert_eq!(dividir("  a   b  ").unwrap(), ["a", "b"]);
-        assert_eq!(dividir(r#"SET k "sin cerrar"#), Err(ErrorProtocolo::ComillasSinCerrar));
+        assert_eq!(
+            dividir(r#"SET k "sin cerrar"#),
+            Err(ErrorProtocolo::ComillasSinCerrar)
+        );
         assert_eq!(dividir("a\u{7}b"), Err(ErrorProtocolo::CaracterDeControl));
     }
 
     #[test]
     fn citar_y_dividir_son_inversas() {
-        for s in ["simple", "con espacio", "", r#"comi"lla"#, r"barra\inversa", "  "] {
+        for s in [
+            "simple",
+            "con espacio",
+            "",
+            r#"comi"lla"#,
+            r"barra\inversa",
+            "  ",
+        ] {
             assert_eq!(dividir(&citar(s)).unwrap(), [s], "falló con {s:?}");
         }
     }
@@ -229,31 +261,54 @@ mod tests {
         assert_eq!(parsear("get a"), Ok(Comando::Get("a".into())));
         assert_eq!(
             parsear("SET a 1 EX 10"),
-            Ok(Comando::Set { clave: "a".into(), valor: "1".into(), ttl: Some(Duration::from_secs(10)) })
+            Ok(Comando::Set {
+                clave: "a".into(),
+                valor: "1".into(),
+                ttl: Some(Duration::from_secs(10))
+            })
         );
         assert_eq!(
             parsear("set a 1 px 250"),
-            Ok(Comando::Set { clave: "a".into(), valor: "1".into(), ttl: Some(Duration::from_millis(250)) })
+            Ok(Comando::Set {
+                clave: "a".into(),
+                valor: "1".into(),
+                ttl: Some(Duration::from_millis(250))
+            })
         );
     }
 
     #[test]
     fn errores_de_parseo() {
         assert_eq!(parsear("   "), Err(ErrorProtocolo::Vacio));
-        assert_eq!(parsear("FOO"), Err(ErrorProtocolo::Desconocido("FOO".into())));
+        assert_eq!(
+            parsear("FOO"),
+            Err(ErrorProtocolo::Desconocido("FOO".into()))
+        );
         assert_eq!(parsear("GET"), Err(ErrorProtocolo::Argumentos("GET")));
         assert_eq!(parsear("GET a b"), Err(ErrorProtocolo::Argumentos("GET")));
         assert_eq!(parsear("SET a"), Err(ErrorProtocolo::Argumentos("SET")));
-        assert!(matches!(parsear("SET a 1 EX 0"), Err(ErrorProtocolo::Opcion(_))));
-        assert!(matches!(parsear("SET a 1 EX x"), Err(ErrorProtocolo::Opcion(_))));
-        assert!(matches!(parsear("SET a 1 ZZ 5"), Err(ErrorProtocolo::Opcion(_))));
+        assert!(matches!(
+            parsear("SET a 1 EX 0"),
+            Err(ErrorProtocolo::Opcion(_))
+        ));
+        assert!(matches!(
+            parsear("SET a 1 EX x"),
+            Err(ErrorProtocolo::Opcion(_))
+        ));
+        assert!(matches!(
+            parsear("SET a 1 ZZ 5"),
+            Err(ErrorProtocolo::Opcion(_))
+        ));
     }
 
     #[test]
     fn serializa_respuestas() {
         assert_eq!(Respuesta::Ok.serializar(), "+OK\n");
         assert_eq!(Respuesta::Entero(-2).serializar(), ":-2\n");
-        assert_eq!(Respuesta::Lista(vec!["a".into(), "b".into()]).serializar(), "*2\n$a\n$b\n");
+        assert_eq!(
+            Respuesta::Lista(vec!["a".into(), "b".into()]).serializar(),
+            "*2\n$a\n$b\n"
+        );
         assert_eq!(Respuesta::Error("x".into()).serializar(), "-ERR x\n");
     }
 }

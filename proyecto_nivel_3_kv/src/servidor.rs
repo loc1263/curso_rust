@@ -32,9 +32,13 @@ pub fn despachar(almacen: &Almacen, comando: Comando) -> (Respuesta, bool) {
             almacen.set(clave, valor, ttl);
             Respuesta::Ok
         }
-        Comando::Get(clave) => almacen.get(&clave).map_or(Respuesta::Nulo, Respuesta::Valor),
+        Comando::Get(clave) => almacen
+            .get(&clave)
+            .map_or(Respuesta::Nulo, Respuesta::Valor),
         Comando::Del(clave) => Respuesta::Entero(i64::from(almacen.del(&clave))),
-        Comando::Incr(clave) => almacen.incr(&clave).map_or_else(|e| Respuesta::Error(e.to_string()), Respuesta::Entero),
+        Comando::Incr(clave) => almacen
+            .incr(&clave)
+            .map_or_else(|e| Respuesta::Error(e.to_string()), Respuesta::Entero),
         Comando::Ttl(clave) => Respuesta::Entero(almacen.ttl(&clave)),
         Comando::Keys => Respuesta::Lista(almacen.keys()),
         Comando::Info => Respuesta::Lista(almacen.info()),
@@ -55,7 +59,11 @@ pub fn procesar_linea(almacen: &Almacen, linea: &str) -> (Respuesta, bool) {
 ///
 /// Tras el apagado deja de aceptar, avisa a las conexiones abiertas y espera (hasta `GRACIA_APAGADO`)
 /// a que terminen. Al volver, ninguna tarea conserva ya un `Almacen`.
-pub async fn servir(listener: TcpListener, almacen: Almacen, apagar: impl Future<Output = ()>) -> io::Result<()> {
+pub async fn servir(
+    listener: TcpListener,
+    almacen: Almacen,
+    apagar: impl Future<Output = ()>,
+) -> io::Result<()> {
     let (tx_apagar, rx_apagar) = watch::channel(false);
     let limite = Arc::new(Semaphore::new(MAX_CONEXIONES));
     let mut conexiones = JoinSet::new();
@@ -146,7 +154,12 @@ async fn manejar(socket: TcpStream, almacen: Almacen, mut apagar: watch::Receive
         }
 
         let (respuesta, cerrar) = procesar_linea(&almacen, linea.trim_end_matches(['\r', '\n']));
-        if escritura.write_all(respuesta.serializar().as_bytes()).await.is_err() || cerrar {
+        if escritura
+            .write_all(respuesta.serializar().as_bytes())
+            .await
+            .is_err()
+            || cerrar
+        {
             break;
         }
     }

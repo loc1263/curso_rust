@@ -1,5 +1,25 @@
 # Módulo 20 — Concurrencia
 
+## La idea en 2 minutos
+
+En la mayoría de lenguajes, los hilos son una fuente de errores que solo aparecen "a veces". Rust cambia las reglas: **si compila, no tiene data races**. Lo consigue con dos ideas que ya conoces: *ownership* (quién es dueño del dato) y los traits `Send`/`Sync` (qué tipos pueden viajar o compartirse entre hilos).
+
+Tienes dos estilos para coordinar hilos:
+
+```rust
+// 1) Mensajes: cada dato tiene un solo dueño a la vez
+let (tx, rx) = std::sync::mpsc::channel();
+thread::spawn(move || tx.send("hola").unwrap());
+println!("{}", rx.recv().unwrap());
+
+// 2) Memoria compartida: Arc (varios dueños) + Mutex (uno a la vez)
+let c = Arc::new(Mutex::new(0));
+```
+
+Si dudas, empieza por mensajes: son más fáciles de razonar.
+
+**Orden recomendado:** `hilos` → `canales_mpsc` → `estado_compartido` → `send_sync`.
+
 ## Objetivos
 
 - Lanzar hilos y compartir datos de forma segura.

@@ -39,7 +39,10 @@ fn main() {
     println!("unwrap_or = {}", b.clone().unwrap_or(0));
     println!("unwrap_or_else = {}", b.clone().unwrap_or_else(|_| -1));
     println!("map = {:?}", a.clone().map(|n| n * 2));
-    println!("map_err = {:?}", b.clone().map_err(|e| format!("falló: {e}")));
+    println!(
+        "map_err = {:?}",
+        b.clone().map_err(|e| format!("falló: {e}"))
+    );
     println!("ok() = {:?}", b.clone().ok());
     println!("is_ok = {}, is_err = {}", a.is_ok(), b.is_err());
 

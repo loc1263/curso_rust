@@ -84,3 +84,7 @@ cargo run -p rgrep -- -n -i fn proyecto_nivel_2_grep/src/lib.rs
 cargo run -p kvdb --bin kv-server -- --aof datos.aof
 cargo run -p kvdb --bin kv-cli
 ```
+
+## Licencia
+
+[MIT](LICENSE)

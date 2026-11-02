@@ -1,5 +1,25 @@
 # Módulo 30 — Concurrencia avanzada
 
+## La idea en 2 minutos
+
+Un `Mutex` es como una puerta con cerradura: entra uno y los demás esperan. Los **atómicos** son operaciones que el procesador garantiza indivisibles, sin cerradura. El reto: cuando varios núcleos tienen cachés propias, ¿en qué orden ven los cambios? Eso es el **modelo de memoria**, y los *orderings* son cuánto orden exiges:
+
+| Ordering | Analogía |
+|---|---|
+| `Relaxed` | "solo cuenta bien; no me importa el resto" (contadores) |
+| `Release` + `Acquire` | "cuando levante la bandera, todo lo que dejé escrito ya es visible" (publicar datos) |
+| `SeqCst` | "todos vemos los sucesos en el mismo orden" (lo más simple y lo más caro) |
+
+```rust
+dato.store(42, Relaxed);
+bandera.store(true, Release);          // publica
+while !bandera.load(Acquire) {}        // espera la publicación; ahora `dato` es visible
+```
+
+Es el módulo más difícil del curso: ve despacio y usa `Mutex` salvo que midas que no basta.
+
+**Orden recomendado:** `atomics_basicos` → `orderings` → `lock_free`.
+
 ## Objetivos
 
 - Usar atómicos en lugar de locks cuando tiene sentido.

@@ -30,7 +30,10 @@ struct Mixto<A, B> {
 
 impl<A, B> Mixto<A, B> {
     fn mezclar<C, D>(self, otro: Mixto<C, D>) -> Mixto<A, D> {
-        Mixto { a: self.a, b: otro.b }
+        Mixto {
+            a: self.a,
+            b: otro.b,
+        }
     }
 }
 
@@ -49,7 +52,9 @@ struct Pila<T> {
 
 impl<T> Pila<T> {
     fn nueva() -> Self {
-        Pila { elementos: Vec::new() }
+        Pila {
+            elementos: Vec::new(),
+        }
     }
     fn apilar(&mut self, v: T) {
         self.elementos.push(v);
@@ -79,7 +84,10 @@ fn main() {
     let entero = Punto::nuevo(1, 2);
     let real = Punto::nuevo(3.0, 4.0);
     println!("{entero:?} y {real:?}");
-    println!("distancia de {real:?} al origen = {}", real.distancia_origen());
+    println!(
+        "distancia de {real:?} al origen = {}",
+        real.distancia_origen()
+    );
     // entero.distancia_origen(); // error: solo definido para Punto<f64>
 
     let m = Mixto { a: 1, b: "x" }.mezclar(Mixto { a: 2.5, b: 'z' });

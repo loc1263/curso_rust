@@ -1,5 +1,24 @@
 # Módulo 19 — Testing
 
+## La idea en 2 minutos
+
+Un test es una pregunta que le haces a tu código y que se repite sola: *"¿sigue funcionando lo que escribí ayer?"*. En Rust hay tres tipos y los tres se lanzan con `cargo test`:
+
+| Tipo | Dónde vive | Para qué |
+|---|---|---|
+| Unitario | `#[cfg(test)] mod tests` en el mismo archivo | probar piezas pequeñas (incluso privadas) |
+| Integración | carpeta `tests/` | probar la API pública como un usuario |
+| Doc test | bloques de código en `///` | que la documentación **nunca** quede desactualizada |
+
+```rust
+#[test]
+fn suma_basica() { assert_eq!(sumar(2, 2), 4); }
+```
+
+Un buen hábito: escribe primero el test que falla, luego el código que lo hace pasar.
+
+**Cómo estudiarlo:** abre `src/lib.rs` y ejecuta `cargo test -p m19_testing`; luego rompe una función a propósito y observa cómo falla.
+
 ## Objetivos
 
 - Escribir tests unitarios, de integración y doc tests.

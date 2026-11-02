@@ -23,7 +23,10 @@ struct Mensaje {
 unsafe impl Sync for Mensaje {}
 
 fn publicar_con_release_acquire() {
-    let m = Arc::new(Mensaje { dato: UnsafeCell::new(String::new()), listo: AtomicBool::new(false) });
+    let m = Arc::new(Mensaje {
+        dato: UnsafeCell::new(String::new()),
+        listo: AtomicBool::new(false),
+    });
 
     let productor = {
         let m = Arc::clone(&m);
@@ -47,7 +50,10 @@ fn publicar_con_release_acquire() {
         })
     };
     productor.join().unwrap();
-    println!("Release/Acquire: el consumidor leyó {:?}", consumidor.join().unwrap());
+    println!(
+        "Release/Acquire: el consumidor leyó {:?}",
+        consumidor.join().unwrap()
+    );
     // Con Relaxed en ambos lados esto sería una data race (UB): no hay garantía de ver el String.
 }
 
@@ -57,12 +63,19 @@ fn contador_relaxed() {
     let hs: Vec<_> = (0..4)
         .map(|_| {
             let c = Arc::clone(&c);
-            thread::spawn(move || (0..1000).for_each(|_| { c.fetch_add(1, Ordering::Relaxed); }))
+            thread::spawn(move || {
+                (0..1000).for_each(|_| {
+                    c.fetch_add(1, Ordering::Relaxed);
+                })
+            })
         })
         .collect();
     hs.into_iter().for_each(|h| h.join().unwrap());
     // join() ya sincroniza: tras él vemos el valor final aunque todo fuera Relaxed
-    println!("Relaxed: contador = {} (no publica ningún otro dato, por eso basta)", c.load(Ordering::Relaxed));
+    println!(
+        "Relaxed: contador = {} (no publica ningún otro dato, por eso basta)",
+        c.load(Ordering::Relaxed)
+    );
 }
 
 // ---------- 3) Fences: separar la sincronización de la operación atómica ----------
@@ -91,8 +104,16 @@ fn con_fences() {
 fn dekker_seqcst() {
     let mut ambos_false = 0;
     for _ in 0..2_000 {
-        let (x, y) = (Arc::new(AtomicBool::new(false)), Arc::new(AtomicBool::new(false)));
-        let (x1, y1, x2, y2) = (Arc::clone(&x), Arc::clone(&y), Arc::clone(&x), Arc::clone(&y));
+        let (x, y) = (
+            Arc::new(AtomicBool::new(false)),
+            Arc::new(AtomicBool::new(false)),
+        );
+        let (x1, y1, x2, y2) = (
+            Arc::clone(&x),
+            Arc::clone(&y),
+            Arc::clone(&x),
+            Arc::clone(&y),
+        );
         let a = thread::spawn(move || {
             x1.store(true, Ordering::SeqCst);
             y1.load(Ordering::SeqCst)
@@ -116,9 +137,15 @@ fn main() {
 
     println!("\nGuía rápida:");
     println!("  - ¿Solo un contador o estadística?              -> Relaxed");
-    println!("  - ¿Publicar datos con una bandera?              -> Release (escritor) + Acquire (lector)");
-    println!("  - ¿Leer-modificar-escribir que publica datos?   -> AcqRel (o Acquire/Release en el CAS)");
+    println!(
+        "  - ¿Publicar datos con una bandera?              -> Release (escritor) + Acquire (lector)"
+    );
+    println!(
+        "  - ¿Leer-modificar-escribir que publica datos?   -> AcqRel (o Acquire/Release en el CAS)"
+    );
     println!("  - ¿No estás seguro / razonar con varias variables? -> SeqCst");
-    println!("  - x86 es un modelo fuerte: errores de ordering pueden pasar desapercibidos allí y romper en ARM.");
+    println!(
+        "  - x86 es un modelo fuerte: errores de ordering pueden pasar desapercibidos allí y romper en ARM."
+    );
     println!("  - Verifica con `loom` (explora intercalados) y Miri (detecta data races).");
 }

@@ -101,7 +101,12 @@ fn main() {
     pixeles.sort();
     println!("por brillo: {pixeles:?}");
 
-    println!("{} {} {}", longitud("abc"), longitud(String::from("hola")), longitud(&String::from("xy")));
+    println!(
+        "{} {} {}",
+        longitud("abc"),
+        longitud(String::from("hola")),
+        longitud(String::from("xy"))
+    );
     println!("{} / {}", saludo("Ana"), saludo(String::from("Luis")));
 
     // Conversiones numéricas: From es seguro, TryFrom comprueba el rango

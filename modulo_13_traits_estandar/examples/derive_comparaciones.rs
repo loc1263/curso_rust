@@ -29,8 +29,16 @@ struct Config {
 }
 
 fn main() {
-    let a = Version { mayor: 1, menor: 2, parche: 3 };
-    let b = Version { mayor: 1, menor: 10, parche: 0 };
+    let a = Version {
+        mayor: 1,
+        menor: 2,
+        parche: 3,
+    };
+    let b = Version {
+        mayor: 1,
+        menor: 10,
+        parche: 0,
+    };
 
     // Debug: {:?} compacto y {:#?} bonito
     println!("{a:?}");
@@ -60,7 +68,11 @@ fn main() {
     println!("ordenados: {ordenado:?}");
 
     // Default: valores "cero" automáticos y sintaxis de actualización
-    let cfg = Config { nombre: "demo".into(), puerto: 8080, ..Default::default() };
+    let cfg = Config {
+        nombre: "demo".into(),
+        puerto: 8080,
+        ..Default::default()
+    };
     println!("{cfg:#?}");
 
     let copia = cfg.clone();
@@ -68,5 +80,7 @@ fn main() {
 
     // f64 solo implementa PartialEq/PartialOrd (por NaN), no Eq/Ord/Hash
     let nan = f64::NAN;
-    println!("NaN == NaN ? {}", nan == nan);
+    #[allow(clippy::eq_op)] // a propósito: demuestra que NaN no es igual a sí mismo
+    let iguales = nan == nan;
+    println!("NaN == NaN ? {iguales}");
 }

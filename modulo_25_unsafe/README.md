@@ -1,5 +1,22 @@
 # Módulo 25 — Unsafe Rust
 
+## La idea en 2 minutos
+
+Rust te protege con reglas estrictas, pero a veces tú sabes algo que el compilador no puede demostrar. `unsafe` es la forma de decir: **"confía en mí, yo me hago responsable de esta parte"**. No apaga las comprobaciones: solo desbloquea cinco operaciones (punteros crudos, funciones unsafe, `static mut`, traits unsafe y uniones).
+
+La filosofía correcta no es "evita unsafe a toda costa", sino **encerrarlo en una caja pequeña con una API segura por fuera**:
+
+```rust
+pub fn dividir_mut<T>(s: &mut [T], medio: usize) -> (&mut [T], &mut [T]) {
+    assert!(medio <= s.len());          // 1) comprobación segura
+    unsafe { /* 2) código que SABEMOS correcto gracias a la línea anterior */ }
+}
+```
+
+Cada bloque `unsafe` lleva un comentario `// SAFETY:` que explica **por qué** es correcto. Si no puedes explicarlo, no lo escribas.
+
+**Orden recomendado:** `punteros_crudos` → `abstraccion_segura` → `maybe_uninit`.
+
 ## Objetivos
 
 - Saber qué permite (y qué NO) un bloque `unsafe`.

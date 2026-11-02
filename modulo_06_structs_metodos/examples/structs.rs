@@ -25,7 +25,10 @@ fn main() {
     // Para modificar campos, TODA la instancia debe ser `mut`
     u1.email = String::from("ana@nuevo.com");
     u1.visitas += 1;
-    println!("{} <{}> activo={} visitas={}", u1.nombre, u1.email, u1.activo, u1.visitas);
+    println!(
+        "{} <{}> activo={} visitas={}",
+        u1.nombre, u1.email, u1.activo, u1.visitas
+    );
 
     // Sintaxis de actualización: reutiliza los campos restantes de otra instancia
     let u2 = Usuario {
@@ -38,6 +41,8 @@ fn main() {
     println!("{u2:#?}");
 
     // Desestructuración
-    let Usuario { nombre, visitas, .. } = u2;
+    let Usuario {
+        nombre, visitas, ..
+    } = u2;
     println!("{nombre} tiene {visitas} visitas");
 }

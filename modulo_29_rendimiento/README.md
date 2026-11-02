@@ -1,5 +1,24 @@
 # Módulo 29 — Rendimiento
 
+## La idea en 2 minutos
+
+La regla de oro: **no optimices a ciegas**. El cuello de botella casi nunca está donde crees. El ciclo es *medir → cambiar una cosa → volver a medir*.
+
+Lo que este módulo te enseña a medir y por qué importa:
+
+| Concepto | Intuición |
+|---|---|
+| Caché | recorrer memoria contigua es mucho más rápido que saltar (ver `layout_memoria`) |
+| Asignaciones | cada `String`/`Vec` nuevo cuesta; reutilizar buffers ahorra mucho (`evitar_allocaciones`) |
+| Paralelismo | repartir trabajo solo compensa si hay **bastante** que repartir (`rayon_paralelo`) |
+| SIMD | una instrucción procesa 8 números a la vez (`simd_basico`) |
+
+```bash
+cargo run --release -p m29_rendimiento --example layout_memoria   # ¡siempre --release!
+```
+
+En modo `debug` no hay optimizaciones y las cifras no significan nada.
+
 ## Objetivos
 
 - Medir antes de optimizar: benchmarks y profiling.

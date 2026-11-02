@@ -28,7 +28,10 @@ struct Longitud<U> {
 
 impl<U> Longitud<U> {
     fn new(valor: f64) -> Self {
-        Longitud { valor, _unidad: PhantomData }
+        Longitud {
+            valor,
+            _unidad: PhantomData,
+        }
     }
 }
 impl<U> Add for Longitud<U> {
@@ -56,12 +59,20 @@ struct Conexion<Estado> {
 
 impl Conexion<Cerrada> {
     fn nueva(destino: &str) -> Self {
-        Conexion { destino: destino.into(), enviados: vec![], _estado: PhantomData }
+        Conexion {
+            destino: destino.into(),
+            enviados: vec![],
+            _estado: PhantomData,
+        }
     }
     // `self` por valor: consume la conexión cerrada y devuelve una abierta
     fn abrir(self) -> Conexion<Abierta> {
         println!("  abriendo {}", self.destino);
-        Conexion { destino: self.destino, enviados: self.enviados, _estado: PhantomData }
+        Conexion {
+            destino: self.destino,
+            enviados: self.enviados,
+            _estado: PhantomData,
+        }
     }
 }
 
@@ -72,7 +83,11 @@ impl Conexion<Abierta> {
     }
     fn cerrar(self) -> Conexion<Cerrada> {
         println!("  cerrando tras {} mensajes", self.enviados.len());
-        Conexion { destino: self.destino, enviados: self.enviados, _estado: PhantomData }
+        Conexion {
+            destino: self.destino,
+            enviados: self.enviados,
+            _estado: PhantomData,
+        }
     }
 }
 
@@ -87,10 +102,16 @@ struct PeticionBuilder<U> {
 
 impl PeticionBuilder<SinUrl> {
     fn new() -> Self {
-        PeticionBuilder { url: SinUrl, metodo: "GET" }
+        PeticionBuilder {
+            url: SinUrl,
+            metodo: "GET",
+        }
     }
     fn url(self, url: &str) -> PeticionBuilder<ConUrl> {
-        PeticionBuilder { url: ConUrl(url.into()), metodo: self.metodo }
+        PeticionBuilder {
+            url: ConUrl(url.into()),
+            metodo: self.metodo,
+        }
     }
 }
 impl<U> PeticionBuilder<U> {
@@ -114,7 +135,10 @@ fn main() {
     let suma = a + Longitud::<Metros>::from(b);
     println!("100 m + 328 pies = {:.1} m", suma.valor);
     // let mal = a + b; // ERROR: no se pueden sumar Metros con Pies
-    println!("tamaño de Longitud<Metros> = {} bytes (igual que un f64)", std::mem::size_of::<Longitud<Metros>>());
+    println!(
+        "tamaño de Longitud<Metros> = {} bytes (igual que un f64)",
+        std::mem::size_of::<Longitud<Metros>>()
+    );
 
     println!("\ntypestate de conexión:");
     let c = Conexion::nueva("servidor:80");
@@ -127,7 +151,10 @@ fn main() {
     let _ = c;
 
     println!("\nbuilder con typestate:");
-    let peticion = PeticionBuilder::new().metodo("POST").url("https://ejemplo.com").construir();
+    let peticion = PeticionBuilder::new()
+        .metodo("POST")
+        .url("https://ejemplo.com")
+        .construir();
     println!("  {peticion}");
     // PeticionBuilder::new().construir(); // ERROR: falta la URL
 }

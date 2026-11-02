@@ -38,14 +38,23 @@ fn main() {
     // Pasar un callback a C: qsort ordena nuestro array
     let mut v = [5, 2, 9, 1, 7];
     unsafe {
-        qsort(v.as_mut_ptr().cast(), v.len(), size_of::<i32>(), comparar_i32);
+        qsort(
+            v.as_mut_ptr().cast(),
+            v.len(),
+            size_of::<i32>(),
+            comparar_i32,
+        );
     }
     println!("qsort -> {v:?}");
 
     // C -> Rust: CStr envuelve un `char*` recibido; to_str valida UTF-8
     let desde_c: *const c_char = texto.as_ptr();
     let s = unsafe { CStr::from_ptr(desde_c) };
-    println!("CStr -> {:?} (bytes con NUL: {})", s.to_str().unwrap(), s.to_bytes_with_nul().len());
+    println!(
+        "CStr -> {:?} (bytes con NUL: {})",
+        s.to_str().unwrap(),
+        s.to_bytes_with_nul().len()
+    );
 
     // CString::new falla si hay un NUL en medio
     println!("{:?}", CString::new("a\0b").is_err());

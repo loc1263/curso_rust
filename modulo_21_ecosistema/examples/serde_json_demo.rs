@@ -64,7 +64,8 @@ fn main() -> Result<(), serde_json::Error> {
     println!("roundtrip igual: {}", vuelta == u);
 
     // Campos opcionales y con default ausentes
-    let minimo = r#"{"id": 2, "nombre": "Luis", "correoElectronico": "l@x.com", "roles": ["lector"]}"#;
+    let minimo =
+        r#"{"id": 2, "nombre": "Luis", "correoElectronico": "l@x.com", "roles": ["lector"]}"#;
     let l: Usuario = serde_json::from_str(minimo)?;
     println!("{l:?}\n");
 
@@ -77,8 +78,13 @@ fn main() -> Result<(), serde_json::Error> {
 
     // Enum etiquetado
     let eventos = vec![
-        Evento::Login { usuario: "ana".into() },
-        Evento::Compra { importe: 19.95, items: 3 },
+        Evento::Login {
+            usuario: "ana".into(),
+        },
+        Evento::Compra {
+            importe: 19.95,
+            items: 3,
+        },
         Evento::Logout,
     ];
     let texto = serde_json::to_string(&eventos)?;

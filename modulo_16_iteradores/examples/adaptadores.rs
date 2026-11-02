@@ -14,19 +14,37 @@ fn main() {
     let numeros = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
     // iter() -> &T, iter_mut() -> &mut T, into_iter() -> T
-    let cuadrados_pares: Vec<i32> = numeros.iter().filter(|&&n| n % 2 == 0).map(|n| n * n).collect();
+    let cuadrados_pares: Vec<i32> = numeros
+        .iter()
+        .filter(|&&n| n % 2 == 0)
+        .map(|n| n * n)
+        .collect();
     println!("cuadrados de pares: {cuadrados_pares:?}");
 
     // Consumidores: sum, product, count, min, max, fold
     println!("suma = {}", numeros.iter().sum::<i32>());
     println!("producto(1..=5) = {}", (1..=5).product::<u64>());
-    println!("max = {:?}, min = {:?}", numeros.iter().max(), numeros.iter().min());
-    println!("fold concatenado = {}", numeros.iter().take(4).fold(String::new(), |acc, n| format!("{acc}{n}-")));
+    println!(
+        "max = {:?}, min = {:?}",
+        numeros.iter().max(),
+        numeros.iter().min()
+    );
+    println!(
+        "fold concatenado = {}",
+        numeros
+            .iter()
+            .take(4)
+            .fold(String::new(), |acc, n| format!("{acc}{n}-"))
+    );
 
     // Búsqueda
     println!("primero > 6: {:?}", numeros.iter().find(|&&n| n > 6));
     println!("posición del 5: {:?}", numeros.iter().position(|&n| n == 5));
-    println!("any > 9: {}, all > 0: {}", numeros.iter().any(|&n| n > 9), numeros.iter().all(|&n| n > 0));
+    println!(
+        "any > 9: {}, all > 0: {}",
+        numeros.iter().any(|&n| n > 9),
+        numeros.iter().all(|&n| n > 0)
+    );
 
     // Recorte
     let v: Vec<_> = numeros.iter().skip(2).step_by(3).collect();
@@ -49,11 +67,21 @@ fn main() {
     println!("partition: {pares_n:?} / {impares_n:?}");
     let encadenado: Vec<_> = (1..3).chain(7..9).collect();
     println!("chain: {encadenado:?}");
-    let aplanado: Vec<_> = vec![vec![1, 2], vec![3], vec![]].into_iter().flatten().collect();
+    let aplanado: Vec<_> = vec![vec![1, 2], vec![3], vec![]]
+        .into_iter()
+        .flatten()
+        .collect();
     println!("flatten: {aplanado:?}");
-    let palabras: Vec<_> = ["hola mundo", "rust es genial"].iter().flat_map(|s| s.split(' ')).collect();
+    let palabras: Vec<_> = ["hola mundo", "rust es genial"]
+        .iter()
+        .flat_map(|s| s.split(' '))
+        .collect();
     println!("flat_map: {palabras:?}");
-    let ventanas: Vec<_> = numeros.windows(3).map(|w| w.iter().sum::<i32>()).take(3).collect();
+    let ventanas: Vec<_> = numeros
+        .windows(3)
+        .map(|w| w.iter().sum::<i32>())
+        .take(3)
+        .collect();
     println!("windows(3) sumas: {ventanas:?}");
     let trozos: Vec<_> = numeros.chunks(4).collect();
     println!("chunks(4): {trozos:?}");
@@ -78,10 +106,26 @@ fn main() {
 
     // Ejemplo realista: agrupar y agregar
     let empleados = [
-        Empleado { nombre: "Ana", depto: "Ingeniería", sueldo: 3000 },
-        Empleado { nombre: "Luis", depto: "Ventas", sueldo: 2000 },
-        Empleado { nombre: "Eva", depto: "Ingeniería", sueldo: 3500 },
-        Empleado { nombre: "Raúl", depto: "Ventas", sueldo: 2200 },
+        Empleado {
+            nombre: "Ana",
+            depto: "Ingeniería",
+            sueldo: 3000,
+        },
+        Empleado {
+            nombre: "Luis",
+            depto: "Ventas",
+            sueldo: 2000,
+        },
+        Empleado {
+            nombre: "Eva",
+            depto: "Ingeniería",
+            sueldo: 3500,
+        },
+        Empleado {
+            nombre: "Raúl",
+            depto: "Ventas",
+            sueldo: 2200,
+        },
     ];
     let mut por_depto: BTreeMap<&str, Vec<&Empleado>> = BTreeMap::new();
     for e in &empleados {
@@ -90,7 +134,10 @@ fn main() {
     for (depto, lista) in &por_depto {
         let total: u32 = lista.iter().map(|e| e.sueldo).sum();
         let nombres: Vec<_> = lista.iter().map(|e| e.nombre).collect();
-        println!("{depto}: {nombres:?} media = {}", total / lista.len() as u32);
+        println!(
+            "{depto}: {nombres:?} media = {}",
+            total / lista.len() as u32
+        );
     }
     let mejor = empleados.iter().max_by_key(|e| e.sueldo).unwrap();
     println!("mejor pagado: {}", mejor.nombre);

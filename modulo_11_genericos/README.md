@@ -1,5 +1,21 @@
 # Módulo 11 — Genéricos
 
+## La idea en 2 minutos
+
+Imagina una caja con etiqueta "contiene: ___". Puedes usar la misma caja para tornillos o para libros sin fabricar una caja distinta por cada cosa. Los **genéricos** son eso: escribes el código una vez y el compilador lo reutiliza con muchos tipos.
+
+```rust
+fn mayor<T: PartialOrd>(a: T, b: T) -> T { if a >= b { a } else { b } }
+
+mayor(3, 7);       // T = i32
+mayor("a", "b");   // T = &str
+```
+
+`T: PartialOrd` es una **promesa**: "solo acepto tipos que se puedan comparar". Sin ella el compilador no te dejaría usar `>=`, porque no sabe qué es `T`.
+Lo sorprendente: no hay coste en ejecución. Rust genera una copia especializada por cada tipo (*monomorfización*), igual que si la hubieras escrito a mano.
+
+**Orden recomendado:** `funciones_genericas` → `tipos_genericos` → `monomorfizacion`.
+
 ## Objetivos
 
 - Escribir funciones y tipos que funcionen con muchos tipos a la vez.

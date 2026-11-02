@@ -3,6 +3,7 @@
 use rayon::prelude::*;
 
 /// Versión ingenua: bucle con índice (comprobación de límites en cada acceso, salvo que el compilador la elimine).
+#[allow(clippy::needless_range_loop)] // a propósito: es la versión "ingenua" que queremos comparar
 pub fn suma_cuadrados_indices(v: &[u64]) -> u64 {
     let mut total = 0;
     for i in 0..v.len() {

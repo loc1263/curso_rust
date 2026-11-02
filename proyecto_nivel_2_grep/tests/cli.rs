@@ -28,7 +28,10 @@ impl Drop for Temporal {
 }
 
 fn rgrep(args: &[&str]) -> Output {
-    Command::new(env!("CARGO_BIN_EXE_rgrep")).args(args).output().unwrap()
+    Command::new(env!("CARGO_BIN_EXE_rgrep"))
+        .args(args)
+        .output()
+        .unwrap()
 }
 
 fn stdout(o: &Output) -> String {
@@ -61,7 +64,11 @@ fn recursivo_con_extension() {
     t.archivo("lib.rs", "// todo\n");
     let o = rgrep(&["-r", "-c", "--ext", "rs", "todo", t.0.to_str().unwrap()]);
     let salida = stdout(&o);
-    assert_eq!(salida.lines().count(), 2, "solo deben aparecer los .rs: {salida}");
+    assert_eq!(
+        salida.lines().count(),
+        2,
+        "solo deben aparecer los .rs: {salida}"
+    );
     assert!(salida.lines().all(|l| l.contains(".rs:1")));
 }
 

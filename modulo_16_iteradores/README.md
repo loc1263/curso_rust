@@ -1,5 +1,20 @@
 # Módulo 16 — Iteradores
 
+## La idea en 2 minutos
+
+Un iterador es una **cinta transportadora**: los elementos pasan uno a uno por estaciones (`filter`, `map`...) y al final un consumidor (`collect`, `sum`) los recoge. Lo importante: **la cinta no se mueve hasta que alguien tira del final** (evaluación perezosa).
+
+```rust
+let pares_al_cuadrado: Vec<i32> = (1..=10)
+    .filter(|n| n % 2 == 0)   // estación 1
+    .map(|n| n * n)           // estación 2
+    .collect();               // consumidor: aquí empieza a moverse todo
+```
+
+Esto se escribe casi como una frase y, aun así, se compila a un bucle tan rápido como el manual. Es el estilo idiomático de Rust: **piensa en transformaciones, no en índices**.
+
+**Orden recomendado:** `adaptadores` → `perezosos` → `iterador_propio`.
+
 ## Objetivos
 
 - Reemplazar bucles manuales por cadenas de adaptadores.

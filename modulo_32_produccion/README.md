@@ -1,5 +1,26 @@
 # Módulo 32 — Producción
 
+## La idea en 2 minutos
+
+Escribir código que funciona en tu máquina es la mitad del trabajo. **Producción** es todo lo que lo rodea para que otros lo usen sin sorpresas:
+
+```
+código ──▶ calidad (fmt, clippy, tests) ──▶ seguridad (audit, deny) ──▶ empaquetado (release, Docker) ──▶ observabilidad (logs, métricas)
+```
+
+Las piezas de este módulo y su pregunta asociada:
+
+| Pieza | Responde a... |
+|---|---|
+| Workspaces | ¿cómo organizo varios crates sin repetir versiones? |
+| Features | ¿cómo hago partes opcionales sin compilar lo que no uso? |
+| CI (`ci.yml`) | ¿cómo me aseguro de que nada se rompe antes de fusionar? |
+| `cargo-deny` / `audit` | ¿mis dependencias tienen vulnerabilidades o licencias problemáticas? |
+| Dockerfile | ¿cómo entrego un binario pequeño y seguro? |
+| SemVer + crates.io | ¿cómo publico sin romper a quien me usa? |
+
+**Cómo estudiarlo:** prueba la plantilla con y sin features (`--features completo`, `--no-default-features`) y luego abre los archivos de `ejemplos/` como si fueran recetas para copiar a tu propio repositorio.
+
 ## Objetivos
 
 - Organizar proyectos grandes con **workspaces** y **features**.

@@ -1,5 +1,21 @@
 # Módulo 12 — Traits
 
+## La idea en 2 minutos
+
+Un **trait** es un contrato: "cualquiera que sepa hacer estas cosas puede entrar". Es como un enchufe estándar: no importa si lo conectas a una lámpara o a una tostadora, mientras cumpla el contrato.
+
+```rust
+trait Animal { fn sonido(&self) -> String; }
+struct Perro;
+impl Animal for Perro { fn sonido(&self) -> String { "guau".into() } }
+```
+
+La gran decisión del módulo es **cómo** usar el contrato:
+- `impl Animal` / genéricos → el compilador sabe el tipo exacto: máxima velocidad.
+- `Box<dyn Animal>` → el tipo se decide en ejecución: permite listas con perros y gatos mezclados, con un pequeño coste.
+
+**Orden recomendado:** `definir_traits` → `impl_vs_dyn` → `traits_avanzados`.
+
 ## Objetivos
 
 - Definir comportamiento compartido con traits.

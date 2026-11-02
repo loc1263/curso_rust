@@ -17,7 +17,10 @@ fn main() {
     println!("f64:    {} bytes", size_of::<f64>());
     println!("char:   {} bytes", size_of::<char>());
     println!("&str:   {} bytes (puntero + longitud)", size_of::<&str>());
-    println!("String: {} bytes (puntero + longitud + capacidad)", size_of::<String>());
+    println!(
+        "String: {} bytes (puntero + longitud + capacidad)",
+        size_of::<String>()
+    );
 
     // Datos en el heap
     let mut s = String::new();

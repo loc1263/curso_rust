@@ -64,18 +64,35 @@ fn main() {
     }
 
     match cli.comando {
-        Comando::Saludar { nombre, veces, mayusculas, idioma } => {
+        Comando::Saludar {
+            nombre,
+            veces,
+            mayusculas,
+            idioma,
+        } => {
             let base = match idioma {
                 Idioma::Es => format!("Hola, {nombre}"),
                 Idioma::En => format!("Hello, {nombre}"),
             };
-            let texto = if mayusculas { base.to_uppercase() } else { base };
+            let texto = if mayusculas {
+                base.to_uppercase()
+            } else {
+                base
+            };
             for _ in 0..veces {
                 println!("{texto}");
             }
         }
         Comando::Sumar { numeros } => {
-            println!("{} = {}", numeros.iter().map(|n| n.to_string()).collect::<Vec<_>>().join(" + "), numeros.iter().sum::<f64>());
+            println!(
+                "{} = {}",
+                numeros
+                    .iter()
+                    .map(|n| n.to_string())
+                    .collect::<Vec<_>>()
+                    .join(" + "),
+                numeros.iter().sum::<f64>()
+            );
         }
         Comando::Info => println!("demo v{}", env!("CARGO_PKG_VERSION")),
     }

@@ -1,5 +1,25 @@
 # Módulo 21 — Ecosistema
 
+## La idea en 2 minutos
+
+Rust es pequeño a propósito: muchas cosas "de uso diario" viven en crates de la comunidad. Este módulo es un **mapa del territorio** para que sepas qué buscar:
+
+| Necesito... | Crate |
+|---|---|
+| leer/escribir JSON, TOML... | `serde` + `serde_json` |
+| una línea de comandos con ayuda automática | `clap` |
+| fechas y horas | `chrono` |
+| números aleatorios | `rand` |
+| registros (logs) con contexto | `tracing` |
+
+```bash
+cargo add serde --features derive   # añade la dependencia a Cargo.toml
+```
+
+Y las herramientas que todo proyecto serio usa: `cargo fmt` (estilo), `cargo clippy` (consejos) y `cargo doc` (documentación).
+
+**Consejo:** antes de añadir una dependencia, mira su mantenimiento reciente y su número de descargas en crates.io.
+
 ## Objetivos
 
 - Conocer los crates imprescindibles de la comunidad.

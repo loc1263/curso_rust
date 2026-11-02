@@ -18,7 +18,7 @@ fn describir(n: i32) -> &'static str {
 
 fn clasificar_edad(edad: u32) -> String {
     match edad {
-        n @ 0..=12 => format!("{n}: niño"),     // @ liga el valor
+        n @ 0..=12 => format!("{n}: niño"), // @ liga el valor
         n @ 13..=17 => format!("{n}: adolescente"),
         n => format!("{n}: adulto"),
     }

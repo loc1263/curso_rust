@@ -1,5 +1,25 @@
 # Módulo 15 — Closures
 
+## La idea en 2 minutos
+
+Un **closure** es una función sin nombre que puede "recordar" variables de donde fue creada, como una nota adhesiva que lleva escrito lo que necesita.
+
+```rust
+let iva = 0.21;
+let con_iva = |precio: f64| precio * (1.0 + iva);   // captura `iva`
+println!("{}", con_iva(100.0));
+```
+
+La pregunta clave es **cómo captura** lo que usa, y eso determina qué trait cumple:
+
+| Si el closure... | Trait | Se puede llamar... |
+|---|---|---|
+| solo lee | `Fn` | muchas veces |
+| modifica lo capturado | `FnMut` | muchas veces (necesita `mut`) |
+| se lleva (consume) algo | `FnOnce` | una sola vez |
+
+**Orden recomendado:** `captura` → `parametros_retornos`.
+
 ## Objetivos
 
 - Escribir funciones anónimas que capturan su entorno.

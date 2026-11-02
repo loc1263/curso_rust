@@ -1,5 +1,23 @@
 # Módulo 13 — Traits estándar
 
+## La idea en 2 minutos
+
+La biblioteca estándar define traits que "enseñan" a tus tipos a comportarse como los de siempre: imprimirse (`Display`), compararse (`PartialEq`, `Ord`), copiarse (`Clone`), convertirse (`From`)...
+
+```rust
+#[derive(Debug, Clone, PartialEq)]   // tres traits gratis con una línea
+struct Punto { x: i32, y: i32 }
+
+let p = Punto { x: 1, y: 2 };
+println!("{p:?}");          // gracias a Debug
+assert_eq!(p, p.clone());   // gracias a Clone + PartialEq
+```
+
+`derive` escribe la implementación obvia por ti. Cuando lo "obvio" no sirve (p. ej., ordenar por brillo en vez de por campos), la implementas a mano.
+Regla útil: **si un tipo tuyo representa un valor, casi siempre quieres `Debug`, `Clone` y `PartialEq`.**
+
+**Orden recomendado:** `derive_comparaciones` → `display_from_into` → `drop_deref_iterator`.
+
 ## Objetivos
 
 - Conocer los traits de la biblioteca estándar que implementa casi todo tipo propio.

@@ -46,7 +46,10 @@ struct Cache<F: Fn(u64) -> u64> {
 }
 impl<F: Fn(u64) -> u64> Cache<F> {
     fn nueva(calculo: F) -> Self {
-        Cache { calculo, valores: HashMap::new() }
+        Cache {
+            calculo,
+            valores: HashMap::new(),
+        }
     }
     fn obtener(&mut self, k: u64) -> u64 {
         if let Some(v) = self.valores.get(&k) {
@@ -61,7 +64,11 @@ impl<F: Fn(u64) -> u64> Cache<F> {
 
 // Tabla de funciones: Vec de closures con distinto cuerpo pero misma firma
 fn pipeline() -> Vec<Box<dyn Fn(i32) -> i32>> {
-    vec![Box::new(|x| x + 1), Box::new(|x| x * 10), Box::new(|x| x - 3)]
+    vec![
+        Box::new(|x| x + 1),
+        Box::new(|x| x * 10),
+        Box::new(|x| x - 3),
+    ]
 }
 
 fn main() {
@@ -79,7 +86,11 @@ fn main() {
     let suma5 = sumador(5);
     println!("{} {}", suma5(1), suma5(10));
 
-    println!("{} {}", operacion("suma")(2.0, 3.0), operacion("mult")(2.0, 3.0));
+    println!(
+        "{} {}",
+        operacion("suma")(2.0, 3.0),
+        operacion("mult")(2.0, 3.0)
+    );
 
     let mut c = Cache::nueva(|n| {
         println!("  calculando {n}²...");

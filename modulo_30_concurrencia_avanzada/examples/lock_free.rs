@@ -26,12 +26,19 @@ pub struct Guardia<'a, T> {
 
 impl<T> Spinlock<T> {
     pub const fn new(dato: T) -> Self {
-        Spinlock { bloqueado: AtomicBool::new(false), dato: UnsafeCell::new(dato) }
+        Spinlock {
+            bloqueado: AtomicBool::new(false),
+            dato: UnsafeCell::new(dato),
+        }
     }
 
     pub fn lock(&self) -> Guardia<'_, T> {
         // Acquire al tomar el lock: vemos todo lo que escribió quien lo soltó (Release)
-        while self.bloqueado.compare_exchange_weak(false, true, Ordering::Acquire, Ordering::Relaxed).is_err() {
+        while self
+            .bloqueado
+            .compare_exchange_weak(false, true, Ordering::Acquire, Ordering::Relaxed)
+            .is_err()
+        {
             // "test-and-test-and-set": esperamos con lecturas baratas hasta que parezca libre
             while self.bloqueado.load(Ordering::Relaxed) {
                 std::hint::spin_loop();
@@ -142,7 +149,11 @@ fn medir_false_sharing() {
     let hs: Vec<_> = (0..2)
         .map(|i| {
             let j = Arc::clone(&juntos);
-            thread::spawn(move || (0..VUELTAS).for_each(|_| { j[i].fetch_add(1, Ordering::Relaxed); }))
+            thread::spawn(move || {
+                (0..VUELTAS).for_each(|_| {
+                    j[i].fetch_add(1, Ordering::Relaxed);
+                })
+            })
         })
         .collect();
     hs.into_iter().for_each(|h| h.join().unwrap());
@@ -153,11 +164,18 @@ fn medir_false_sharing() {
     let hs: Vec<_> = (0..2)
         .map(|i| {
             let s = Arc::clone(&separados);
-            thread::spawn(move || (0..VUELTAS).for_each(|_| { s[i].0.fetch_add(1, Ordering::Relaxed); }))
+            thread::spawn(move || {
+                (0..VUELTAS).for_each(|_| {
+                    s[i].0.fetch_add(1, Ordering::Relaxed);
+                })
+            })
         })
         .collect();
     hs.into_iter().for_each(|h| h.join().unwrap());
-    println!("contadores adyacentes: {t_juntos:>9.2?} | en líneas de caché distintas: {:>9.2?}", t.elapsed());
+    println!(
+        "contadores adyacentes: {t_juntos:>9.2?} | en líneas de caché distintas: {:>9.2?}",
+        t.elapsed()
+    );
 }
 
 fn main() {
@@ -203,12 +221,18 @@ fn main() {
     });
     prod.join().unwrap();
     let suma = cons.join().unwrap();
-    println!("SPSC: {total} mensajes en {:?}, suma = {suma} (esperado {})", t.elapsed(), total * (total + 1) / 2);
+    println!(
+        "SPSC: {total} mensajes en {:?}, suma = {suma} (esperado {})",
+        t.elapsed(),
+        total * (total + 1) / 2
+    );
 
     // --- False sharing ---
     medir_false_sharing();
 
     println!("\nSobre estructuras lock-free generales (pilas Treiber, colas Michael-Scott):");
     println!("  - El difícil problema es la RECLAMACIÓN de memoria (ABA, use-after-free).");
-    println!("  - No las escribas tú en producción: usa `crossbeam` (epoch GC, SegQueue, ArrayQueue, deque).");
+    println!(
+        "  - No las escribas tú en producción: usa `crossbeam` (epoch GC, SegQueue, ArrayQueue, deque)."
+    );
 }

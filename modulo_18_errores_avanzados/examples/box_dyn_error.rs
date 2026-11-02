@@ -49,9 +49,10 @@ impl Error for ErrorServicio {
 }
 
 fn servicio(entrada: &str) -> Result<i32, ErrorServicio> {
-    entrada
-        .parse::<i32>()
-        .map_err(|e| ErrorServicio { contexto: "leer la entrada", causa: Box::new(e) })
+    entrada.parse::<i32>().map_err(|e| ErrorServicio {
+        contexto: "leer la entrada",
+        causa: Box::new(e),
+    })
 }
 
 fn main() {

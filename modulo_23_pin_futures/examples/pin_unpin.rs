@@ -46,7 +46,10 @@ fn main() {
     let a = AutoRef::nuevo("hola");
     println!("datos       : {}", a.as_ref().datos());
     println!("vía puntero : {}", a.as_ref().via_puntero());
-    println!("¿apunta a sí mismo? {}", std::ptr::eq(a.as_ref().puntero, &a.datos));
+    println!(
+        "¿apunta a sí mismo? {}",
+        std::ptr::eq(a.as_ref().puntero, &a.datos)
+    );
 
     // Mover el Pin<Box<_>> está permitido: lo que se mueve es el puntero a la caja,
     // los datos siguen en la misma dirección del heap.

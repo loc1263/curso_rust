@@ -105,7 +105,15 @@ fn main() {
         }
     }
     let (_, n, b) = medir(|| {
-        let ops: Vec<Box<dyn Op>> = (0..1_000).map(|i| if i % 2 == 0 { Box::new(Suma(i)) as Box<dyn Op> } else { Box::new(Doble) }).collect();
+        let ops: Vec<Box<dyn Op>> = (0..1_000)
+            .map(|i| {
+                if i % 2 == 0 {
+                    Box::new(Suma(i)) as Box<dyn Op>
+                } else {
+                    Box::new(Doble)
+                }
+            })
+            .collect();
         ops.iter().fold(0, |acc, o| o.aplicar(acc) % 1000)
     });
     informe("1 000 Box<dyn Op>", n, b);
@@ -115,7 +123,15 @@ fn main() {
         Doble,
     }
     let (_, n, b) = medir(|| {
-        let ops: Vec<OpEnum> = (0..1_000).map(|i| if i % 2 == 0 { OpEnum::Suma(i) } else { OpEnum::Doble }).collect();
+        let ops: Vec<OpEnum> = (0..1_000)
+            .map(|i| {
+                if i % 2 == 0 {
+                    OpEnum::Suma(i)
+                } else {
+                    OpEnum::Doble
+                }
+            })
+            .collect();
         ops.iter().fold(0, |acc, o| match o {
             OpEnum::Suma(k) => acc + k,
             OpEnum::Doble => acc * 2,
@@ -130,6 +146,10 @@ fn main() {
     });
     informe("array [u8; 256] en la pila", n, b);
 
-    println!("\nSugerencias: with_capacity, reutilizar buffers (clear), &str/&[T] en vez de clonar,");
-    println!("enum en vez de Box<dyn>, SmallVec/ArrayVec para colecciones pequeñas, Cow para clonar solo si hace falta.");
+    println!(
+        "\nSugerencias: with_capacity, reutilizar buffers (clear), &str/&[T] en vez de clonar,"
+    );
+    println!(
+        "enum en vez de Box<dyn>, SmallVec/ArrayVec para colecciones pequeñas, Cow para clonar solo si hace falta."
+    );
 }

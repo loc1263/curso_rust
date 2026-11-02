@@ -1,5 +1,24 @@
 # Módulo 27 — Macros
 
+## La idea en 2 minutos
+
+Una macro es **código que escribe código** antes de compilar. Ya usas muchas: `println!`, `vec!`, `format!`. Hay dos familias:
+
+- **Declarativas** (`macro_rules!`): reconocen un patrón y lo sustituyen. Son como "buscar y reemplazar" inteligente.
+- **Procedurales**: funciones Rust que reciben el código como datos y generan más código (los `#[derive(...)]`).
+
+```rust
+macro_rules! maximo {
+    ($x:expr) => { $x };
+    ($x:expr, $($resto:expr),+) => {{ let a = $x; let b = maximo!($($resto),+); if a > b { a } else { b } }};
+}
+maximo!(3, 9, 4);   // 9
+```
+
+Úsalas solo cuando una función no baste (argumentos variables, repetición de código, DSLs). Para ver lo que genera una macro: `cargo expand`.
+
+**Orden recomendado:** `macro_rules` → `procedurales` → lee `macros_derive/src/lib.rs`.
+
 ## Objetivos
 
 - Escribir macros declarativas con `macro_rules!`.

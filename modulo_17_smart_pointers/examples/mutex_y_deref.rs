@@ -58,7 +58,10 @@ fn main() {
     for h in hilos {
         h.join().unwrap();
     }
-    println!("contador final = {} (esperado 8000)", *contador.lock().unwrap());
+    println!(
+        "contador final = {} (esperado 8000)",
+        *contador.lock().unwrap()
+    );
 
     // El guard se libera al terminar el ámbito; acortarlo evita bloqueos largos
     let datos = Arc::new(Mutex::new(vec![1, 2, 3]));

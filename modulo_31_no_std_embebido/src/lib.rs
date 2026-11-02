@@ -26,7 +26,11 @@ pub struct Anillo<T, const N: usize> {
 
 impl<T, const N: usize> Anillo<T, N> {
     pub const fn new() -> Self {
-        Anillo { datos: [const { None }; N], cabeza: 0, len: 0 }
+        Anillo {
+            datos: [const { None }; N],
+            cabeza: 0,
+            len: 0,
+        }
     }
 
     pub const fn len(&self) -> usize {
@@ -79,7 +83,10 @@ pub struct TextoFijo<const N: usize> {
 
 impl<const N: usize> TextoFijo<N> {
     pub const fn new() -> Self {
-        TextoFijo { bytes: [0; N], len: 0 }
+        TextoFijo {
+            bytes: [0; N],
+            len: 0,
+        }
     }
 
     pub fn as_str(&self) -> &str {
@@ -120,7 +127,11 @@ pub fn crc8(datos: &[u8]) -> u8 {
     for &b in datos {
         crc ^= b;
         for _ in 0..8 {
-            crc = if crc & 0x80 != 0 { (crc << 1) ^ 0x07 } else { crc << 1 };
+            crc = if crc & 0x80 != 0 {
+                (crc << 1) ^ 0x07
+            } else {
+                crc << 1
+            };
         }
     }
     crc
@@ -183,7 +194,10 @@ mod tests {
         assert_eq!(a.push(4), Err(4)); // llena
         assert_eq!(a.pop(), Some(1));
         a.push(5).unwrap(); // reutiliza el hueco: la posición envuelve
-        assert_eq!([a.pop(), a.pop(), a.pop(), a.pop()], [Some(2), Some(3), Some(5), None]);
+        assert_eq!(
+            [a.pop(), a.pop(), a.pop(), a.pop()],
+            [Some(2), Some(3), Some(5), None]
+        );
     }
 
     #[test]
@@ -191,7 +205,7 @@ mod tests {
         let mut t = TextoFijo::<16>::new();
         write!(t, "x={}", 42).unwrap();
         assert_eq!(t.as_str(), "x=42");
-        assert!(write!(t, "{}", "una cadena demasiado larga").is_err());
+        assert!(write!(t, "una cadena demasiado larga").is_err());
     }
 
     #[test]

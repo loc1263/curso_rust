@@ -15,7 +15,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let http = Client::new();
 
-    println!("GET /salud -> {}", http.get(format!("{base}/salud")).send().await?.text().await?);
+    println!(
+        "GET /salud -> {}",
+        http.get(format!("{base}/salud"))
+            .send()
+            .await?
+            .text()
+            .await?
+    );
 
     let sin_token = http.get(format!("{base}/tareas")).send().await?;
     println!("GET /tareas sin token -> {}", sin_token.status());
@@ -32,23 +39,50 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     // Validación: título vacío
-    let r = http.post(format!("{base}/tareas")).bearer_auth(TOKEN).json(&json!({"titulo": " "})).send().await?;
+    let r = http
+        .post(format!("{base}/tareas"))
+        .bearer_auth(TOKEN)
+        .json(&json!({"titulo": " "}))
+        .send()
+        .await?;
     println!("POST título vacío -> {} {}", r.status(), r.text().await?);
 
     // Completar y consultar
-    http.post(format!("{base}/tareas/2/completar")).bearer_auth(TOKEN).send().await?;
-    let t: Tarea = http.get(format!("{base}/tareas/2")).bearer_auth(TOKEN).send().await?.json().await?;
+    http.post(format!("{base}/tareas/2/completar"))
+        .bearer_auth(TOKEN)
+        .send()
+        .await?;
+    let t: Tarea = http
+        .get(format!("{base}/tareas/2"))
+        .bearer_auth(TOKEN)
+        .send()
+        .await?
+        .json()
+        .await?;
     println!("GET /tareas/2 -> {t:?}");
 
     // Filtros con query string
-    let hechas: Vec<Tarea> =
-        http.get(format!("{base}/tareas?hecha=true")).bearer_auth(TOKEN).send().await?.json().await?;
+    let hechas: Vec<Tarea> = http
+        .get(format!("{base}/tareas?hecha=true"))
+        .bearer_auth(TOKEN)
+        .send()
+        .await?
+        .json()
+        .await?;
     println!("hechas: {hechas:?}");
 
     // Borrar y comprobar el 404
-    let r = http.delete(format!("{base}/tareas/1")).bearer_auth(TOKEN).send().await?;
+    let r = http
+        .delete(format!("{base}/tareas/1"))
+        .bearer_auth(TOKEN)
+        .send()
+        .await?;
     println!("DELETE /tareas/1 -> {}", r.status());
-    let r = http.get(format!("{base}/tareas/1")).bearer_auth(TOKEN).send().await?;
+    let r = http
+        .get(format!("{base}/tareas/1"))
+        .bearer_auth(TOKEN)
+        .send()
+        .await?;
     assert_eq!(r.status(), StatusCode::NOT_FOUND);
     println!("GET /tareas/1 -> {} {}", r.status(), r.text().await?);
 

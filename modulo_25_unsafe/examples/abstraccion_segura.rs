@@ -12,7 +12,12 @@ fn dividir_mut<T>(s: &mut [T], medio: usize) -> (&mut [T], &mut [T]) {
     assert!(medio <= len, "medio fuera de rango"); // invariante comprobado en código SEGURO
     // SAFETY: las dos mitades [0, medio) y [medio, len) no se solapan y ambas están
     // dentro del slice original, que estamos tomando prestado en exclusiva.
-    unsafe { (slice::from_raw_parts_mut(ptr, medio), slice::from_raw_parts_mut(ptr.add(medio), len - medio)) }
+    unsafe {
+        (
+            slice::from_raw_parts_mut(ptr, medio),
+            slice::from_raw_parts_mut(ptr.add(medio), len - medio),
+        )
+    }
 }
 
 // ---------- Un buffer de tamaño fijo con acceso rápido ----------
@@ -88,7 +93,10 @@ fn main() {
     println!("sin comprobar(3) = {}", unsafe { b.get_sin_comprobar(3) });
     println!("len = {} vacío = {}", b.len(), b.is_empty());
 
-    println!("{:?}", Ascii::nueva("hola").map(|a| a.como_str().to_uppercase()));
+    println!(
+        "{:?}",
+        Ascii::nueva("hola").map(|a| a.como_str().to_uppercase())
+    );
     println!("{:?}", Ascii::nueva("ñandú").is_some());
 
     let mut letras = ['a', 'b', 'c', 'd'];

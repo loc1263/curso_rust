@@ -33,7 +33,11 @@ fn main() {
     println!("{:?}", duplicar("x"));
     println!("{:?}", sumar_cadenas("2", "3"));
     println!("{:?}", sumar_cadenas("2", "tres"));
-    println!("{:?} {:?}", inicial_mayuscula("rust"), inicial_mayuscula(""));
+    println!(
+        "{:?} {:?}",
+        inicial_mayuscula("rust"),
+        inicial_mayuscula("")
+    );
 
     // Crea un archivo temporal para probar los dos caminos de error
     let ruta = std::env::temp_dir().join("m09_numero.txt");

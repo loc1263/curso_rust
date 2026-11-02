@@ -19,7 +19,9 @@ async fn main() -> std::io::Result<()> {
     axum::serve(listener, app())
         // Apagado ordenado: deja terminar las peticiones en curso al recibir Ctrl+C
         .with_graceful_shutdown(async {
-            tokio::signal::ctrl_c().await.expect("no se pudo escuchar Ctrl+C");
+            tokio::signal::ctrl_c()
+                .await
+                .expect("no se pudo escuchar Ctrl+C");
             println!("\napagando...");
         })
         .await

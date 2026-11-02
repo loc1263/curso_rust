@@ -60,7 +60,10 @@ impl<'a> Iterator for IterPlaylist<'a> {
 }
 impl Playlist {
     fn iter(&self) -> IterPlaylist<'_> {
-        IterPlaylist { playlist: self, indice: 0 }
+        IterPlaylist {
+            playlist: self,
+            indice: 0,
+        }
     }
 }
 impl<'a> IntoIterator for &'a Playlist {
@@ -87,15 +90,23 @@ fn main() {
     println!("fib: {fibs:?}");
 
     // Todos los adaptadores funcionan sobre tu iterador
-    let suma_pares: u64 = Fibonacci::new().take_while(|&x| x < 4_000_000).filter(|x| x % 2 == 0).sum();
+    let suma_pares: u64 = Fibonacci::new()
+        .take_while(|&x| x < 4_000_000)
+        .filter(|x| x % 2 == 0)
+        .sum();
     println!("suma de fib pares < 4M = {suma_pares}");
-    println!("Fibonacci se detiene por overflow tras {} términos", Fibonacci::new().count());
+    println!(
+        "Fibonacci se detiene por overflow tras {} términos",
+        Fibonacci::new().count()
+    );
 
     let ca = CuentaAtras { desde: 5, hasta: 0 };
     println!("len = {}", ca.len());
     println!("{:?}", ca.collect::<Vec<_>>());
 
-    let pl = Playlist { canciones: vec!["Uno".into(), "Dos".into(), "Tres".into()] };
+    let pl = Playlist {
+        canciones: vec!["Uno".into(), "Dos".into(), "Tres".into()],
+    };
     for (i, c) in pl.iter().enumerate() {
         println!("{}. {c}", i + 1);
     }

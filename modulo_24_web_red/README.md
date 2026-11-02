@@ -1,5 +1,20 @@
 # Módulo 24 — Programación web y red
 
+## La idea en 2 minutos
+
+Una API web es un programa que escucha peticiones HTTP y devuelve respuestas. Con `axum`, cada ruta es una función `async` y sus **argumentos describen lo que necesita**: el framework los rellena por ti.
+
+```rust
+async fn obtener(
+    State(estado): State<Estado>,   // datos compartidos
+    Path(id): Path<u64>,            // de la URL /tareas/{id}
+) -> Result<Json<Tarea>, ErrorApi>  // lo que devuelve (JSON o un error HTTP)
+```
+
+El flujo de una petición: **ruta → middleware (log, autenticación) → handler → respuesta**. El middleware es como un portero: puede dejar pasar la petición o cortarla con un 401.
+
+**Cómo estudiarlo:** ejecuta `--example cliente` (todo en un proceso, con salida paso a paso), luego `--example servidor` y prueba con `curl`, y por último lee `tests/api.rs`.
+
 ## Objetivos
 
 - Construir una API REST con `axum`: rutas, extractores, estado, errores y middleware.

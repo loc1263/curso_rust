@@ -1,5 +1,27 @@
 # Módulo 17 — Smart pointers
 
+## La idea en 2 minutos
+
+Hasta ahora cada valor tenía **un** dueño y vivía en un sitio fijo. Los *smart pointers* relajan esas reglas de forma controlada. Elige según la pregunta que te hagas:
+
+| Necesito... | Uso |
+|---|---|
+| un valor en el heap / un tipo recursivo | `Box<T>` |
+| **varios dueños** del mismo dato (un hilo) | `Rc<T>` |
+| varios dueños entre hilos | `Arc<T>` |
+| **mutar** algo que está compartido | `RefCell<T>` (un hilo) / `Mutex<T>` (varios) |
+| apuntar sin ser dueño (evitar ciclos) | `Weak<T>` |
+
+```rust
+let a = Rc::new(String::from("compartido"));
+let b = Rc::clone(&a);                // no copia el texto: suma un dueño
+println!("{}", Rc::strong_count(&a)); // 2
+```
+
+Combinaciones típicas: `Rc<RefCell<T>>` (un hilo) y `Arc<Mutex<T>>` (varios hilos).
+
+**Orden recomendado:** `box_rc_arc` → `refcell_weak` → `mutex_y_deref`.
+
 ## Objetivos
 
 - Elegir el puntero adecuado: `Box`, `Rc`, `Arc`, `Cell`, `RefCell`, `Weak`.

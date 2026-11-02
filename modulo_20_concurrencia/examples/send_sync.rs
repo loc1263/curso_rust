@@ -43,7 +43,12 @@ fn main() {
     // es_send::<ConPuntero>();          // los punteros crudos no son Send
     // es_send::<NoEnviable>();
 
-    let _ = (ConPuntero(std::ptr::null_mut()), NoEnviable { _marca: PhantomData });
+    let _ = (
+        ConPuntero(std::ptr::null_mut()),
+        NoEnviable {
+            _marca: PhantomData,
+        },
+    );
 
     // Ejemplo de error clásico que Rust detecta en compilación:
     //   let rc = Rc::new(5);

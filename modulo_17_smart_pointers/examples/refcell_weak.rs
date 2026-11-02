@@ -43,7 +43,9 @@ impl Nodo {
 }
 
 fn main() {
-    let c = Contador { visitas: Cell::new(0) };
+    let c = Contador {
+        visitas: Cell::new(0),
+    };
     c.visitar();
     c.visitar();
     println!("visitas = {}", c.visitar());
@@ -57,7 +59,10 @@ fn main() {
     {
         let _r1 = dato.borrow();
         let _r2 = dato.borrow();
-        println!("try_borrow_mut con lecturas activas: {:?}", dato.try_borrow_mut().is_err());
+        println!(
+            "try_borrow_mut con lecturas activas: {:?}",
+            dato.try_borrow_mut().is_err()
+        );
     }
 
     // --- Rc<RefCell<T>> ---

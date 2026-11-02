@@ -114,7 +114,9 @@ impl Animal for Loro {
 
 fn main() {
     saludar(&Perro);
-    saludar(&Gato { nombre: "Misu".into() });
+    saludar(&Gato {
+        nombre: "Misu".into(),
+    });
     let _otro_loro = saludar_y_clonar(&Loro);
 
     println!("{}", resumen(&Cuadrado(3.0)));

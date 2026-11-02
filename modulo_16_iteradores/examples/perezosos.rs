@@ -26,7 +26,11 @@ fn main() {
     println!("{r:?}\n");
 
     // Gracias a la pereza se pueden usar secuencias infinitas
-    let primeros: Vec<u64> = (1..).map(|n| n * n).filter(|n| n % 3 == 1).take(5).collect();
+    let primeros: Vec<u64> = (1..)
+        .map(|n| n * n)
+        .filter(|n| n % 3 == 1)
+        .take(5)
+        .collect();
     println!("primeros cuadrados ≡ 1 (mod 3): {primeros:?}");
 
     // Cortocircuito: find / any / take paran en cuanto pueden
@@ -44,8 +48,8 @@ fn main() {
     })
     .collect();
     println!("from_fn: {desde_fn:?}");
-    let repetido: String = std::iter::repeat("ab").take(3).collect();
-    println!("repeat: {repetido}");
+    let repetido: String = "ab".repeat(3);
+    println!("repeat (str::repeat; equivale a iter::repeat(..).take(3)): {repetido}");
 
     // peekable: mirar el siguiente sin consumirlo
     let mut it = "12+34".chars().peekable();
@@ -58,7 +62,10 @@ fn main() {
             break;
         }
     }
-    println!("primer número: {numero}, resto: {:?}", it.collect::<String>());
+    println!(
+        "primer número: {numero}, resto: {:?}",
+        it.collect::<String>()
+    );
 
     // rev, last, nth, cycle
     println!("{:?}", (1..=5).rev().collect::<Vec<_>>());

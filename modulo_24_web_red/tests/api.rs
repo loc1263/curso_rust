@@ -24,8 +24,20 @@ async fn salud_es_publica() {
 async fn sin_token_da_401_y_con_token_incorrecto_tambien() {
     let base = servidor().await;
     let c = Client::new();
-    assert_eq!(c.get(format!("{base}/tareas")).send().await.unwrap().status(), StatusCode::UNAUTHORIZED);
-    let r = c.get(format!("{base}/tareas")).bearer_auth("otro").send().await.unwrap();
+    assert_eq!(
+        c.get(format!("{base}/tareas"))
+            .send()
+            .await
+            .unwrap()
+            .status(),
+        StatusCode::UNAUTHORIZED
+    );
+    let r = c
+        .get(format!("{base}/tareas"))
+        .bearer_auth("otro")
+        .send()
+        .await
+        .unwrap();
     assert_eq!(r.status(), StatusCode::UNAUTHORIZED);
 }
 
@@ -34,17 +46,41 @@ async fn ciclo_completo_crear_completar_borrar() {
     let base = servidor().await;
     let c = Client::new();
 
-    let r = c.post(format!("{base}/tareas")).bearer_auth(TOKEN).json(&json!({"titulo": "x"})).send().await.unwrap();
+    let r = c
+        .post(format!("{base}/tareas"))
+        .bearer_auth(TOKEN)
+        .json(&json!({"titulo": "x"}))
+        .send()
+        .await
+        .unwrap();
     assert_eq!(r.status(), StatusCode::CREATED);
     let t: Tarea = r.json().await.unwrap();
     assert_eq!((t.id, t.hecha), (1, false));
 
-    let t: Tarea = c.post(format!("{base}/tareas/1/completar")).bearer_auth(TOKEN).send().await.unwrap().json().await.unwrap();
+    let t: Tarea = c
+        .post(format!("{base}/tareas/1/completar"))
+        .bearer_auth(TOKEN)
+        .send()
+        .await
+        .unwrap()
+        .json()
+        .await
+        .unwrap();
     assert!(t.hecha);
 
-    let r = c.delete(format!("{base}/tareas/1")).bearer_auth(TOKEN).send().await.unwrap();
+    let r = c
+        .delete(format!("{base}/tareas/1"))
+        .bearer_auth(TOKEN)
+        .send()
+        .await
+        .unwrap();
     assert_eq!(r.status(), StatusCode::NO_CONTENT);
-    let r = c.get(format!("{base}/tareas/1")).bearer_auth(TOKEN).send().await.unwrap();
+    let r = c
+        .get(format!("{base}/tareas/1"))
+        .bearer_auth(TOKEN)
+        .send()
+        .await
+        .unwrap();
     assert_eq!(r.status(), StatusCode::NOT_FOUND);
 }
 
@@ -66,12 +102,37 @@ async fn filtro_por_hecha_y_limite() {
     let base = servidor().await;
     let c = Client::new();
     for t in ["a", "b", "c"] {
-        c.post(format!("{base}/tareas")).bearer_auth(TOKEN).json(&json!({"titulo": t})).send().await.unwrap();
+        c.post(format!("{base}/tareas"))
+            .bearer_auth(TOKEN)
+            .json(&json!({"titulo": t}))
+            .send()
+            .await
+            .unwrap();
     }
-    c.post(format!("{base}/tareas/2/completar")).bearer_auth(TOKEN).send().await.unwrap();
+    c.post(format!("{base}/tareas/2/completar"))
+        .bearer_auth(TOKEN)
+        .send()
+        .await
+        .unwrap();
 
-    let hechas: Vec<Tarea> = c.get(format!("{base}/tareas?hecha=true")).bearer_auth(TOKEN).send().await.unwrap().json().await.unwrap();
+    let hechas: Vec<Tarea> = c
+        .get(format!("{base}/tareas?hecha=true"))
+        .bearer_auth(TOKEN)
+        .send()
+        .await
+        .unwrap()
+        .json()
+        .await
+        .unwrap();
     assert_eq!(hechas.len(), 1);
-    let dos: Vec<Tarea> = c.get(format!("{base}/tareas?limite=2")).bearer_auth(TOKEN).send().await.unwrap().json().await.unwrap();
+    let dos: Vec<Tarea> = c
+        .get(format!("{base}/tareas?limite=2"))
+        .bearer_auth(TOKEN)
+        .send()
+        .await
+        .unwrap()
+        .json()
+        .await
+        .unwrap();
     assert_eq!(dos.len(), 2);
 }

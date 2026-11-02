@@ -14,7 +14,10 @@ mod banco {
 
         impl Cuenta {
             pub fn new(titular: &str, saldo: f64) -> Self {
-                Self { titular: titular.to_string(), saldo }
+                Self {
+                    titular: titular.to_string(),
+                    saldo,
+                }
             }
 
             pub fn saldo(&self) -> f64 {

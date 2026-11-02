@@ -3,7 +3,7 @@
 //
 // `tracing`: logs estructurados con spans. En PowerShell: $env:RUST_LOG="debug"
 
-use tracing::{debug, error, info, instrument, span, warn, Level};
+use tracing::{Level, debug, error, info, instrument, span, warn};
 use tracing_subscriber::EnvFilter;
 
 #[instrument] // crea un span automáticamente con los argumentos de la función
@@ -20,7 +20,9 @@ fn procesar_pedido(id: u32, importe: f64) -> Result<f64, String> {
 fn main() {
     // Sin RUST_LOG definido, mostramos INFO y superior
     tracing_subscriber::fmt()
-        .with_env_filter(EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info")))
+        .with_env_filter(
+            EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info")),
+        )
         .with_target(false)
         .init();
 

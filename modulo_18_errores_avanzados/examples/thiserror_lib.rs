@@ -33,7 +33,9 @@ fn parsear(texto: &str) -> HashMap<&str, &str> {
 }
 
 fn obtener<'a>(cfg: &HashMap<&str, &'a str>, clave: &str) -> Resultado<&'a str> {
-    cfg.get(clave).copied().ok_or_else(|| ErrorConfig::Falta(clave.into()))
+    cfg.get(clave)
+        .copied()
+        .ok_or_else(|| ErrorConfig::Falta(clave.into()))
 }
 
 fn puerto(cfg: &HashMap<&str, &str>) -> Resultado<u16> {
@@ -50,7 +52,12 @@ fn leer_archivo(ruta: &str) -> Resultado<String> {
 }
 
 fn main() {
-    let casos = ["puerto = 8080", "host = x", "puerto = abc", "puerto = 70000"];
+    let casos = [
+        "puerto = 8080",
+        "host = x",
+        "puerto = abc",
+        "puerto = 70000",
+    ];
     for texto in casos {
         let cfg = parsear(texto);
         match puerto(&cfg) {

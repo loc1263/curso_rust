@@ -39,7 +39,11 @@ async fn main() -> Result<()> {
     let listener = TcpListener::bind(&config.direccion)
         .await
         .with_context(|| format!("no se pudo escuchar en {}", config.direccion))?;
-    eprintln!("kvdb {} escuchando en {}", env!("CARGO_PKG_VERSION"), listener.local_addr()?);
+    eprintln!(
+        "kvdb {} escuchando en {}",
+        env!("CARGO_PKG_VERSION"),
+        listener.local_addr()?
+    );
     match &config.aof {
         Some(ruta) => eprintln!("persistencia AOF en {}", ruta.display()),
         None => eprintln!("sin persistencia (usa --aof RUTA para activarla)"),

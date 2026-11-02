@@ -28,7 +28,11 @@ impl Servidor {
             })
             .await
         });
-        Servidor { direccion, apagar: Some(tx), tarea }
+        Servidor {
+            direccion,
+            apagar: Some(tx),
+            tarea,
+        }
     }
 
     async fn cliente(&self) -> Cliente {
@@ -53,7 +57,10 @@ struct Cliente {
 impl Cliente {
     async fn conectar(direccion: SocketAddr) -> Cliente {
         let (r, w) = TcpStream::connect(direccion).await.unwrap().into_split();
-        Cliente { lector: BufReader::new(r), escritor: w }
+        Cliente {
+            lector: BufReader::new(r),
+            escritor: w,
+        }
     }
 
     async fn linea(&mut self) -> String {
@@ -64,14 +71,21 @@ impl Cliente {
 
     /// Envía una orden y devuelve la primera línea de la respuesta.
     async fn cmd(&mut self, orden: &str) -> String {
-        self.escritor.write_all(format!("{orden}\n").as_bytes()).await.unwrap();
+        self.escritor
+            .write_all(format!("{orden}\n").as_bytes())
+            .await
+            .unwrap();
         self.linea().await
     }
 
     /// Para respuestas tipo lista: `*n` + n líneas.
     async fn lista(&mut self, orden: &str) -> Vec<String> {
         let cabecera = self.cmd(orden).await;
-        let n: usize = cabecera.strip_prefix('*').unwrap_or_else(|| panic!("no es una lista: {cabecera}")).parse().unwrap();
+        let n: usize = cabecera
+            .strip_prefix('*')
+            .unwrap_or_else(|| panic!("no es una lista: {cabecera}"))
+            .parse()
+            .unwrap();
         let mut v = Vec::new();
         for _ in 0..n {
             v.push(self.linea().await.trim_start_matches('$').to_string());
@@ -117,9 +131,17 @@ async fn errores_no_cierran_la_conexion() {
     let mut c = s.cliente().await;
     assert!(c.cmd("FOO").await.starts_with("-ERR comando desconocido"));
     assert!(c.cmd("GET").await.starts_with("-ERR número de argumentos"));
-    assert!(c.cmd(r#"SET a "sin cerrar"#).await.starts_with("-ERR comillas"));
+    assert!(
+        c.cmd(r#"SET a "sin cerrar"#)
+            .await
+            .starts_with("-ERR comillas")
+    );
     assert_eq!(c.cmd("SET texto abc").await, "+OK");
-    assert!(c.cmd("INCR texto").await.starts_with("-ERR el valor no es un entero"));
+    assert!(
+        c.cmd("INCR texto")
+            .await
+            .starts_with("-ERR el valor no es un entero")
+    );
     assert_eq!(c.cmd("PING").await, "+PONG"); // sigue viva
     s.detener().await;
 }
@@ -182,7 +204,11 @@ async fn quit_cierra_la_conexion() {
     let mut c = s.cliente().await;
     assert_eq!(c.cmd("QUIT").await, "+BYE");
     let mut resto = Vec::new();
-    assert_eq!(c.lector.read_to_end(&mut resto).await.unwrap(), 0, "el servidor debe cerrar");
+    assert_eq!(
+        c.lector.read_to_end(&mut resto).await.unwrap(),
+        0,
+        "el servidor debe cerrar"
+    );
     s.detener().await;
 }
 
@@ -230,10 +256,22 @@ async fn persistencia_aof_sobrevive_a_un_reinicio() {
     assert_eq!(c.cmd("GET nombre").await, "$Ana María");
     assert_eq!(c.cmd("GET borrar").await, "_");
     assert_eq!(c.cmd("GET n").await, "$2");
-    assert_eq!(c.cmd("GET efimera").await, "_", "una clave caducada no debe resucitar");
+    assert_eq!(
+        c.cmd("GET efimera").await,
+        "_",
+        "una clave caducada no debe resucitar"
+    );
     assert_eq!(c.cmd("GET larga").await, "$v");
-    let ttl: i64 = c.cmd("TTL larga").await.trim_start_matches(':').parse().unwrap();
-    assert!((3590..=3600).contains(&ttl), "el TTL se conserva tras reiniciar: {ttl}");
+    let ttl: i64 = c
+        .cmd("TTL larga")
+        .await
+        .trim_start_matches(':')
+        .parse()
+        .unwrap();
+    assert!(
+        (3590..=3600).contains(&ttl),
+        "el TTL se conserva tras reiniciar: {ttl}"
+    );
     drop(c);
     s.detener().await;
 

@@ -85,7 +85,9 @@ pub struct Cuenta {
 
 impl Cuenta {
     pub fn nueva(saldo_inicial: u64) -> Self {
-        Cuenta { saldo: saldo_inicial }
+        Cuenta {
+            saldo: saldo_inicial,
+        }
     }
 
     pub fn saldo(&self) -> u64 {

@@ -20,7 +20,7 @@ fn main() {
     println!("el hilo dice: {}", h.join().unwrap());
 
     // `move` transfiere la propiedad al hilo (el hilo puede vivir más que la función)
-    let datos = vec![1, 2, 3];
+    let datos = [1, 2, 3];
     let h = thread::spawn(move || datos.iter().sum::<i32>());
     println!("suma en hilo = {}", h.join().unwrap());
 
@@ -53,5 +53,8 @@ fn main() {
         Err(_) => println!("el hilo hizo panic (capturado con join)"),
     }
 
-    println!("hilos disponibles: {:?}", thread::available_parallelism().map(|n| n.get()));
+    println!(
+        "hilos disponibles: {:?}",
+        thread::available_parallelism().map(|n| n.get())
+    );
 }

@@ -78,6 +78,7 @@ impl<T: Copy + Default, const F: usize, const C: usize> Matriz<T, F, C> {
     }
 
     // El tipo de retorno INTERCAMBIA las dimensiones: el compilador lo comprueba
+    #[allow(clippy::needless_range_loop)] // índices explícitos: más claro para ver F y C
     fn transponer(&self) -> Matriz<T, C, F> {
         let mut r = [[T::default(); F]; C];
         for i in 0..F {
@@ -95,6 +96,7 @@ where
     T: Copy + Default + Add<Output = T> + Mul<Output = T>,
 {
     type Output = Matriz<T, F, K>;
+    #[allow(clippy::needless_range_loop)]
     fn mul(self, otra: Matriz<T, C, K>) -> Matriz<T, F, K> {
         let mut r = [[T::default(); K]; F];
         for i in 0..F {
@@ -119,7 +121,11 @@ fn main() {
 
     println!("\n-- GAT: ventanas mutables solapadas --");
     let mut datos = [1, 2, 3, 4, 5];
-    let mut it = VentanasMut { datos: &mut datos, tam: 3, pos: 0 };
+    let mut it = VentanasMut {
+        datos: &mut datos,
+        tam: 3,
+        pos: 0,
+    };
     while let Some(v) = it.siguiente() {
         v[0] += 10; // modifica y la siguiente ventana verá el cambio
         println!("  {v:?}");

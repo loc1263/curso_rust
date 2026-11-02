@@ -24,7 +24,9 @@ fn punteros() {
 
     // Un puntero crudo puede ser nulo o estar colgante: comprobar es TU responsabilidad
     let nulo: *const i32 = ptr::null();
-    println!("¿nulo? {}  (as_ref -> {:?})", nulo.is_null(), unsafe { nulo.as_ref() });
+    println!("¿nulo? {}  (as_ref -> {:?})", nulo.is_null(), unsafe {
+        nulo.as_ref()
+    });
 
     // Dos &mut al mismo dato son UB en Rust, pero dos *mut al mismo dato no lo son (hasta que los usas mal)
     let mut v = 1;
@@ -88,10 +90,15 @@ fn main() {
 
     let datos = [10, 20, 30];
     // SAFETY: 1 < 3
-    println!("elemento 1 = {}", unsafe { elemento_sin_comprobar(&datos, 1) });
+    println!("elemento 1 = {}", unsafe {
+        elemento_sin_comprobar(&datos, 1)
+    });
     // Si pasáramos 7 sería comportamiento indefinido (UB), no un panic
 
-    println!("bytes de 0x01020304u32 (little endian) = {:?}", 0x0102_0304u32.como_bytes());
+    println!(
+        "bytes de 0x01020304u32 (little endian) = {:?}",
+        0x0102_0304u32.como_bytes()
+    );
     println!("bytes de [1u16, 2] = {:?}", [1u16, 2].como_bytes());
 
     incrementar_global();

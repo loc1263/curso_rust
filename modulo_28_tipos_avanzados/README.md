@@ -1,5 +1,20 @@
 # Módulo 28 — Sistema de tipos avanzado
 
+## La idea en 2 minutos
+
+La idea central de este módulo es una frase famosa: **"haz que los estados inválidos no se puedan representar"**. En vez de comprobar en ejecución que "no abres una conexión ya abierta", haces que el programa **ni compile**.
+
+```rust
+let c = Conexion::nueva("srv");   // Conexion<Cerrada>
+// c.enviar("hola");              // ERROR: `enviar` solo existe en Conexion<Abierta>
+let mut c = c.abrir();            // ahora es Conexion<Abierta>
+c.enviar("hola");                 // OK
+```
+
+Las herramientas para lograrlo: **newtype** (tipos distintos para ids y precios), **`PhantomData`** (llevar información en el tipo sin coste), **typestate** (el estado vive en el tipo) y **const generics** (tamaños en el tipo).
+
+**Orden recomendado:** `phantom_typestate` (lo más práctico) → `asociados_gat_const` → `hrtb_sellado`.
+
 ## Objetivos
 
 - Usar el sistema de tipos para que los **estados inválidos no se puedan representar**.

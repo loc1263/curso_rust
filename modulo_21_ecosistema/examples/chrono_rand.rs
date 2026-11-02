@@ -16,18 +16,30 @@ fn main() {
     let nacimiento = NaiveDate::from_ymd_opt(1990, 5, 17).unwrap();
     let hoy = ahora.date_naive();
     let dias = (hoy - nacimiento).num_days();
-    println!("{nacimiento} fue un {:?}; han pasado {dias} días", nacimiento.weekday());
+    println!(
+        "{nacimiento} fue un {:?}; han pasado {dias} días",
+        nacimiento.weekday()
+    );
 
     // Aritmética con Duration
     let entrega = hoy + Duration::days(30);
-    println!("entrega en 30 días: {entrega} ({})", entrega.format("%A %d de %B"));
+    println!(
+        "entrega en 30 días: {entrega} ({})",
+        entrega.format("%A %d de %B")
+    );
 
     // Con zona horaria fija: formatos RFC 3339 y parseo
     let fecha = Utc.with_ymd_and_hms(2025, 12, 31, 23, 59, 0).unwrap();
     println!("RFC 3339: {}", fecha.to_rfc3339());
-    println!("un minuto después: {}", (fecha + Duration::minutes(1)).format("%Y-%m-%d %H:%M"));
+    println!(
+        "un minuto después: {}",
+        (fecha + Duration::minutes(1)).format("%Y-%m-%d %H:%M")
+    );
     let parseada = chrono::DateTime::parse_from_rfc3339("2024-02-29T12:30:00+02:00").unwrap();
-    println!("parseada: {parseada} (año bisiesto: {})", NaiveDate::from_ymd_opt(2024, 2, 29).is_some());
+    println!(
+        "parseada: {parseada} (año bisiesto: {})",
+        NaiveDate::from_ymd_opt(2024, 2, 29).is_some()
+    );
 
     // Cuántos viernes 13 hay en 2026
     let viernes_13 = (1..=12)
@@ -41,7 +53,10 @@ fn main() {
     let dado: u32 = rng.random_range(1..=6);
     let probabilidad: f64 = rng.random(); // [0, 1)
     let moneda = rng.random_bool(0.5);
-    println!("\ndado = {dado}, p = {probabilidad:.3}, moneda = {}", if moneda { "cara" } else { "cruz" });
+    println!(
+        "\ndado = {dado}, p = {probabilidad:.3}, moneda = {}",
+        if moneda { "cara" } else { "cruz" }
+    );
 
     // Elegir y mezclar
     let frutas = ["manzana", "pera", "kiwi", "fresa"];
@@ -55,7 +70,10 @@ fn main() {
     let mut b = StdRng::seed_from_u64(42);
     let sa: Vec<u32> = (0..5).map(|_| a.random_range(0..100)).collect();
     let sb: Vec<u32> = (0..5).map(|_| b.random_range(0..100)).collect();
-    println!("misma semilla -> misma secuencia: {sa:?} == {sb:?} -> {}", sa == sb);
+    println!(
+        "misma semilla -> misma secuencia: {sa:?} == {sb:?} -> {}",
+        sa == sb
+    );
 
     // Monte Carlo: estimar π
     let mut rng = StdRng::seed_from_u64(1);

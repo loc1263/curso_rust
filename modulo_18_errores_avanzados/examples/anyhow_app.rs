@@ -17,7 +17,10 @@ fn leer_pedido(linea: &str) -> Result<Pedido> {
     let (id, cantidad) = linea
         .split_once(',')
         .ok_or_else(|| anyhow!("línea sin coma: '{linea}'"))?;
-    let id = id.trim().parse::<u32>().with_context(|| format!("id inválido en '{linea}'"))?;
+    let id = id
+        .trim()
+        .parse::<u32>()
+        .with_context(|| format!("id inválido en '{linea}'"))?;
     let cantidad = cantidad
         .trim()
         .parse::<u32>()

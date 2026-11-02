@@ -1,5 +1,18 @@
 # Módulo 26 — FFI (interoperar con C y otros lenguajes)
 
+## La idea en 2 minutos
+
+Casi todo el software del mundo está escrito en C, y casi todos los lenguajes pueden hablar con C. **FFI** (*Foreign Function Interface*) es ese idioma común: si tu función "habla C", la puede llamar Python, Node, C++...
+
+```rust
+#[unsafe(no_mangle)]                       // conserva el nombre del símbolo
+pub extern "C" fn m26_sumar(a: i32, b: i32) -> i32 { a + b }
+```
+
+La frontera tiene reglas propias porque C no conoce `String` ni `Result`: se usan tipos simples, `CString`/`CStr` para texto, punteros opacos para objetos, y **quien reserva memoria es quien debe liberarla**.
+
+**Orden recomendado:** `c_desde_rust` (Rust llama a C) → `api_propia` (C llamaría a Rust) → `c/demo.c` (un programa C real).
+
 ## Objetivos
 
 - Llamar a C desde Rust (`extern "C"`) y exponer Rust a C.

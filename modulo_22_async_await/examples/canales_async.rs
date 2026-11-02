@@ -14,7 +14,9 @@ async fn main() {
         let tx = tx.clone();
         tokio::spawn(async move {
             for n in 0..2 {
-                tx.send(format!("productor {id}, mensaje {n}")).await.unwrap();
+                tx.send(format!("productor {id}, mensaje {n}"))
+                    .await
+                    .unwrap();
                 sleep(Duration::from_millis(10)).await;
             }
         });
@@ -25,7 +27,11 @@ async fn main() {
         recibidos.push(m);
     }
     recibidos.sort();
-    println!("mpsc: {} mensajes, primero = {:?}\n", recibidos.len(), recibidos[0]);
+    println!(
+        "mpsc: {} mensajes, primero = {:?}\n",
+        recibidos.len(),
+        recibidos[0]
+    );
 
     // --- oneshot: una sola respuesta (patrón petición/respuesta) ---
     let (resp_tx, resp_rx) = oneshot::channel();
@@ -40,7 +46,11 @@ async fn main() {
     let mut rx2 = btx.subscribe();
     btx.send("noticia 1").unwrap();
     btx.send("noticia 2").unwrap();
-    println!("broadcast rx1: {:?} {:?}", rx1.recv().await, rx1.recv().await);
+    println!(
+        "broadcast rx1: {:?} {:?}",
+        rx1.recv().await,
+        rx1.recv().await
+    );
     println!("broadcast rx2: {:?}\n", rx2.recv().await);
 
     // --- watch: un valor que cambia; los receptores ven siempre el ÚLTIMO ---
@@ -96,5 +106,8 @@ async fn main() {
     for h in hs {
         h.await.unwrap();
     }
-    println!("Semaphore: máximo de tareas simultáneas = {}", activas.lock().await.1);
+    println!(
+        "Semaphore: máximo de tareas simultáneas = {}",
+        activas.lock().await.1
+    );
 }

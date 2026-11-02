@@ -29,8 +29,8 @@ fn main() {
 }
 
 fn ejecutar(args: &[String], ruta: &Path) -> Result<(), String> {
-    let mut tareas = almacen::cargar(ruta)
-        .map_err(|e| format!("no se pudo leer {}: {e}", ruta.display()))?;
+    let mut tareas =
+        almacen::cargar(ruta).map_err(|e| format!("no se pudo leer {}: {e}", ruta.display()))?;
 
     match args.first().map(String::as_str) {
         Some("add") => {
@@ -78,7 +78,8 @@ fn leer_id(args: &[String]) -> Result<u32, String> {
 }
 
 fn guardar(ruta: &Path, tareas: &[Tarea]) -> Result<(), String> {
-    almacen::guardar(ruta, tareas).map_err(|e| format!("no se pudo guardar {}: {e}", ruta.display()))
+    almacen::guardar(ruta, tareas)
+        .map_err(|e| format!("no se pudo guardar {}: {e}", ruta.display()))
 }
 
 fn listar(tareas: &[Tarea]) {

@@ -31,10 +31,18 @@ struct Nodo {
 }
 impl Nodo {
     fn nuevo(valor: i32) -> Self {
-        Nodo { valor, izq: None, der: None }
+        Nodo {
+            valor,
+            izq: None,
+            der: None,
+        }
     }
     fn insertar(&mut self, v: i32) {
-        let rama = if v < self.valor { &mut self.izq } else { &mut self.der };
+        let rama = if v < self.valor {
+            &mut self.izq
+        } else {
+            &mut self.der
+        };
         match rama {
             Some(n) => n.insertar(v),
             None => *rama = Some(Box::new(Nodo::nuevo(v))),
@@ -82,7 +90,10 @@ fn main() {
 
     // Box<dyn Trait>: trait objects en el heap
     let saludos: Vec<Box<dyn Saluda>> = vec![Box::new(Es), Box::new(En)];
-    println!("{:?}", saludos.iter().map(|s| s.saluda()).collect::<Vec<_>>());
+    println!(
+        "{:?}",
+        saludos.iter().map(|s| s.saluda()).collect::<Vec<_>>()
+    );
 
     // Mover un valor grande al heap
     let grande = Box::new([0u8; 1024]);
@@ -96,13 +107,21 @@ fn main() {
         let b = compartido.clone();
         println!("referencias: {} ({a} / {b})", Rc::strong_count(&compartido));
     }
-    println!("referencias tras el bloque: {}", Rc::strong_count(&compartido));
+    println!(
+        "referencias tras el bloque: {}",
+        Rc::strong_count(&compartido)
+    );
 
     // Grafo compartido: dos listas comparten la cola
     let cola = Rc::new(vec![3, 4]);
     let l1 = (vec![1], Rc::clone(&cola));
     let l2 = (vec![2], Rc::clone(&cola));
-    println!("{:?} y {:?} comparten {} dueños", l1.0, l2.0, Rc::strong_count(&cola));
+    println!(
+        "{:?} y {:?} comparten {} dueños",
+        l1.0,
+        l2.0,
+        Rc::strong_count(&cola)
+    );
 
     // --- Arc: como Rc pero con contador atómico (Send + Sync) ---
     let numeros = Arc::new(vec![1, 2, 3, 4]);
@@ -116,7 +135,10 @@ fn main() {
         }));
     }
     let total: i32 = hilos.into_iter().map(|h| h.join().unwrap()).sum();
-    println!("total = {total}, referencias finales = {}", Arc::strong_count(&numeros));
+    println!(
+        "total = {total}, referencias finales = {}",
+        Arc::strong_count(&numeros)
+    );
 
     // Rc NO es Send: `thread::spawn(move || rc)` no compilaría.
     // Rc/Arc dan acceso de SOLO LECTURA; para mutar hace falta RefCell/Mutex (siguiente ejemplo).

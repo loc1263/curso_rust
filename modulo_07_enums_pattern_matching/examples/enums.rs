@@ -23,9 +23,9 @@ impl Direccion {
 // Cada variante puede guardar datos distintos
 #[derive(Debug)]
 enum Mensaje {
-    Salir,                      // sin datos
-    Mover { x: i32, y: i32 },   // como un struct
-    Escribir(String),           // como una tupla
+    Salir,                    // sin datos
+    Mover { x: i32, y: i32 }, // como un struct
+    Escribir(String),         // como una tupla
     Color(u8, u8, u8),
 }
 

@@ -22,7 +22,10 @@ mod tests {
 
     #[test]
     fn contiene_puntos() {
-        let c = Circulo { centro: (0.0, 0.0), radio: 5.0 };
+        let c = Circulo {
+            centro: (0.0, 0.0),
+            radio: 5.0,
+        };
         assert!(c.contiene((3.0, 4.0))); // justo en el borde
         assert!(!c.contiene((4.0, 4.0)));
     }

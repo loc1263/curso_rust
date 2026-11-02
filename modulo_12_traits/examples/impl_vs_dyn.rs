@@ -83,5 +83,7 @@ fn main() {
 
     println!("\nResumen:");
     println!("  genéricos / impl Trait -> rápido, se inlinea, un tipo por instancia");
-    println!("  dyn Trait              -> vtable, permite tipos mezclados, pequeño coste en llamadas");
+    println!(
+        "  dyn Trait              -> vtable, permite tipos mezclados, pequeño coste en llamadas"
+    );
 }

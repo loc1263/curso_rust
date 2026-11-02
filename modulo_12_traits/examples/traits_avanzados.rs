@@ -68,13 +68,19 @@ struct V2 {
 impl Add for V2 {
     type Output = V2;
     fn add(self, o: V2) -> V2 {
-        V2 { x: self.x + o.x, y: self.y + o.y }
+        V2 {
+            x: self.x + o.x,
+            y: self.y + o.y,
+        }
     }
 }
 impl Mul<f64> for V2 {
     type Output = V2;
     fn mul(self, k: f64) -> V2 {
-        V2 { x: self.x * k, y: self.y * k }
+        V2 {
+            x: self.x * k,
+            y: self.y * k,
+        }
     }
 }
 

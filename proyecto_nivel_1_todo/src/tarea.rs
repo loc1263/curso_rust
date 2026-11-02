@@ -7,7 +7,11 @@ pub struct Tarea {
 
 impl Tarea {
     pub fn new(id: u32, titulo: String) -> Self {
-        Self { id, titulo, hecha: false }
+        Self {
+            id,
+            titulo,
+            hecha: false,
+        }
     }
 
     /// Formato en disco: `id|hecha|titulo` (hecha es 0 o 1).

@@ -20,7 +20,11 @@ fn main() {
     println!("(feature `estadisticas` desactivada: no hay módulo `estadisticas`)");
 
     #[cfg(feature = "colores")]
-    println!("{} / {}", m32_produccion::colores::verde("verde"), m32_produccion::colores::rojo("rojo"));
+    println!(
+        "{} / {}",
+        m32_produccion::colores::verde("verde"),
+        m32_produccion::colores::rojo("rojo")
+    );
     #[cfg(not(feature = "colores"))]
     println!("(feature `colores` desactivada)");
 
